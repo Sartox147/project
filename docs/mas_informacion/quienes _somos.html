@@ -1,0 +1,288 @@
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroMovil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .nav-links a,
+        .btn {
+            margin-left: 1rem;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .nav-links a:hover {
+            color: #3498db;
+        }
+
+        .btn {
+            color: white;
+            background-color: #3498db;
+        }
+
+        .btn:hover {
+            color: white;
+            background-color: #2980b9;
+        }
+
+        .login-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 8rem 0 6rem;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px #3498db (0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #ecf0f1;
+            margin: 0 auto 2rem;
+            max-width: 600px;
+        }
+
+        .mision,
+        .porque-elegirnos,
+        .contacto {
+            padding: 6rem 0;
+        }
+
+        .mision-grid,
+        .razones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .contacto {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            text-align: center;
+            clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        footer a:hover {
+            color: #e74c3c;
+        }
+
+        .modal,
+        .tabcontent {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            margin: 10% auto;
+            border-radius: 10px;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close:hover {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <a href="../Inicio/index.html" class="logo">ElectroMovil</a>
+            <button class="login-btn"
+                onclick="window.location.href='../sesion.html'">Iniciar
+                Sesión</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>¿Quienes Somos?</h1>
+                <p>Somos una empresa especializada en la reparación y mantenimiento de lavadoras y neveras, comprometida
+                    con brindar soluciones rápidas y confiables para que sus electrodomésticos funcionen siempre en
+                    óptimas condiciones. Nos destacamos por ofrecer un servicio técnico personalizado y eficiente,
+                    adaptado a las necesidades de cada cliente.</p>
+            </div>
+        </section>
+
+        <section id="mision" class="mision">
+            <div class="container">
+                <h2></h2>
+                <div class="servicios-grid">
+                    <div class="card">
+                        <h3>Misión</h3>
+                        <p>Proporcionar servicios técnicos especializados en la reparación y mantenimiento de lavadoras
+                            y neveras, con un enfoque en la calidad, la rapidez y la satisfacción del cliente. Nuestra
+                            misión es resolver problemas técnicos de manera efectiva, asegurando que cada cliente reciba
+                            un servicio confiable y transparente, minimizando el tiempo de inactividad de sus
+                            electrodomésticos.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Visión</h3>
+                        <p>Convertirnos en la empresa de referencia en servicios técnicos de electrodomésticos en el
+                            mercado local y nacional, destacándonos por nuestra innovación, profesionalismo y compromiso
+                            con la satisfacción del cliente. Aspiramos a ser reconocidos por nuestra capacidad de
+                            resolver problemas técnicos complejos, siempre con un enfoque en la excelencia y el uso de
+                            tecnologías avanzadas.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Compromiso</h3>
+                        <p>Contamos con un equipo de técnicos altamente capacitados y con amplia experiencia en la
+                            reparación y mantenimiento de electrodomésticos. Cada miembro de nuestro equipo está
+                            comprometido con brindar un servicio de alta calidad, asegurándose de que su lavadora o
+                            nevera funcione de manera óptima.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="porque-elegirnos" class="porque-elegirnos">
+            <div class="container">
+                <h2>Reseñas</h2>
+                <div class="razones-grid">
+                    <div class="card">
+                        <h3> * La rapidez y profesionalismo del equipo fue excelente. Mi nevera quedó como nueva y el
+                            servicio fue impecable. Juan Pérez</h3>
+                        <h3> * Excelente servicio. Mi lavadora dejó de funcionar y en menos de 24 horas ya estaba
+                            reparada.
+                            El técnico fue muy amable y profesional. 100% recomendado. María López</h3>
+                        <h3> * Tuve problemas con mi nevera y el equipo no solo solucionó el problema rápidamente, sino
+                            que
+                            también me explicaron cómo prevenir futuros daños. Un servicio técnico de confianza. Carlos
+                            Ramírez</h3>
+                        <h3> * La atención al cliente es excelente. Siempre estuvieron en contacto y me informaron sobre
+                            el
+                            estado de la reparación. Ahora mi lavadora funciona mejor que nunca. Definitivamente los
+                            llamaré de nuevo si tengo algún problema. Ana García</h3>
+
+                        <p></p>
+                    </div>
+        </section>
+
+        <section id="contacto" class="contacto">
+            <div class="container">
+                <h2>¿Necesita Ayuda? Contáctenos</h2>
+                <p>Llámenos al: <strong>322-325-3844</strong></p>
+                <p>Estamos disponibles 24/7 para atender sus necesidades</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 ElectroMovil. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
