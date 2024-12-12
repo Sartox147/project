@@ -75,6 +75,8 @@ INSERT INTO `cliente` (`idcliente`, `NombresCliente`, `CorreoCliente`, `Password
 (4, 'pedro', 'pedro@gmail.com', '$2y$10$2XbD9gw7VDe7up0zpHZZ7.qu0m7xsi2vLcaQ9P1QQLVrqOaNqwlcq'),
 (6, 'pepito', 'pepito@gmail.com', '*A4B6157319038724E3560894F7F932C8886EBFCF');
 
+DELETE FROM cliente WHERE idcliente=6;
+
 -- --------------------------------------------------------
 
 --
