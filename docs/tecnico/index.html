@@ -1,0 +1,135 @@
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interfaz Técnico - ElectroMovil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+
+<body
+    style="margin: 0; padding: 0; font-family: 'Poppins', sans-serif; color: #333; scroll-behavior: smooth; background: url('marca_de_agua_tecnico.png') no-repeat center center fixed; background-size: cover;">
+
+    <header
+        style="background-color: #fff; padding: 1rem 0; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); position: fixed; width: 100%; top: 0; z-index: 1000;">
+        <nav style="display: flex; justify-content: space-between; align-items: center; width: 90%; margin: 0 auto;">
+            <a href="#"
+                style="font-size: 1.5rem; font-weight: bold; color: #3498db; text-decoration: none;">ElectroMovil</a>
+
+            <div style="display: flex; gap: 1rem;">
+
+                <button onclick="window.location.href='../perfil_tecnico/perfil_tecnico.html'"
+                    style="background-color: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
+                    <i class="fas fa-user" style="margin-right: 0.5rem;"></i>Perfil Técnico
+                </button>
+
+                <button onclick="window.location.href='../index.html'"
+                    style="background-color: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
+                    Salir
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <section style="background-color: #dfdfdf77; padding: 8rem 0; text-align: center;">
+        <div style="width: 90%; margin: 0 auto;">
+            <h1 style="font-size: 2.5rem; color: #3498db;">Bienvenido, Técnico</h1>
+            <p style="font-size: 1.2rem; max-width: 600px; margin: 1rem auto;">Aquí puedes gestionar tus visitas
+                asignadas, reportar avances y actualizar tu perfil.</p>
+        </div>
+    </section>
+
+    <!-- Sección de visitas asignadas -->
+    <section style="background-color: #f8f9fa; text-align: center; padding: 4rem 0;">
+        <h2 style="font-size: 2rem; color: #3498db;">Visitas Asignadas</h2>
+        <div style="max-width: 1000px; margin: 2rem auto;">
+            <table style="width: 100%; border-collapse: collapse; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <thead style="background-color: #3498db; color: white;">
+                    <tr>
+                        <th style="padding: 1rem;">ID Visita</th>
+                        <th style="padding: 1rem;">Cliente</th>
+                        <th style="padding: 1rem;">Dirección</th>
+                        <th style="padding: 1rem;">Fecha</th>
+                        <th style="padding: 1rem;">Tipo de Servicio</th>
+                        <th style="padding: 1rem;">Estado</th>
+                        <th style="padding: 1rem;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 1rem;">#101</td>
+                        <td style="padding: 1rem;">Juan Pérez</td>
+                        <td style="padding: 1rem;">Calle 123, Ciudad</td>
+                        <td style="padding: 1rem;">2024-12-20</td>
+                        <td style="padding: 1rem;">Reparación</td>
+                        <td style="padding: 1rem; color: #3498db;">Pendiente</td>
+                        <td style="padding: 1rem;">
+                            <button onclick="mostrarModal(this)"
+                                style="background-color: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Estado</button>
+                            <input type="date" style="margin-top: 1rem; display: none;" class="fecha-reprogramar" />
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 1rem;">#102</td>
+                        <td style="padding: 1rem;">María López</td>
+                        <td style="padding: 1rem;">Avenida 456, Ciudad</td>
+                        <td style="padding: 1rem;">2024-12-22</td>
+                        <td style="padding: 1rem;">Mantenimiento</td>
+                        <td style="padding: 1rem; color: #3498db;">Pendiente</td>
+                        <td style="padding: 1rem;">
+                            <button onclick="mostrarModal(this)"
+                                style="background-color: #3498db; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">Estado</button>
+                            <input type="date" style="margin-top: 1rem; display: none;" class="fecha-reprogramar" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Sección de Mapa Técnico -->
+    <section style="background-color: #f8f9fa; text-align: center; padding: 4rem 0;">
+        <h2 style="font-size: 2rem; color: #3498db;">Mapa Técnico</h2>
+        <div style="max-width: 1000px; margin: 2rem auto;">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d63631.70277658661!2d-74.10483199999999!3d4.5973504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sco!4v1734488019385!5m2!1ses!2sco"
+                width="100%" height="400" style="border: 0; border-radius: 10px;" allowfullscreen="" loading="lazy">
+            </iframe>
+        </div>
+    </section>
+
+
+    <!-- Sección de reportar avances -->
+    <section style="background-color: #dfdfdf77; text-align: center; padding: 4rem 0;">
+        <h2 style="font-size: 2rem; color: #3498db;">Reportar Avances</h2>
+        <form
+            style="max-width: 600px; margin: 2rem auto; background-color: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+            <div style="margin-bottom: 1.5rem;">
+                <label for="id-visita" style="display: block; font-size: 1rem; margin-bottom: 0.5rem;">ID de
+                    Visita</label>
+                <input type="text" id="id-visita" name="id-visita"
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 5px;" required>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label for="comentarios"
+                    style="display: block; font-size: 1rem; margin-bottom: 0.5rem;">Comentarios</label>
+                <textarea id="comentarios" name="comentarios"
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 5px;" rows="4"
+                    required></textarea>
+            </div>
+            <button type="submit"
+                style="background-color: #3498db; color: white; padding: 1rem 2rem; border-radius: 25px; border: none; cursor: pointer;">Enviar
+                Reporte</button>
+        </form>
+    </section>
+
+
+    <footer style="background-color: #333; color: white; padding: 1rem 0; text-align: center;">
+        <p style="margin: 0;">&copy; 2024 ElectroMovil. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+
+</html>
