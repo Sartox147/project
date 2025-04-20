@@ -1,0 +1,236 @@
+/* ElectroMovil.css */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    scroll-behavior: smooth;
+    background-size: cover;
+  }
+  
+  .container {
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  header {
+    background-color: #fff;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  nav .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3498db;
+  }
+  
+  nav .nav-links {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  nav .login-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .hero {
+    text-align: center;
+    padding: 5rem 0;
+    background-color: #3f97f0;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+    color: #FFFFFF;
+  }
+  
+  .hero p {
+    font-size: 1.2rem;
+    margin: 1rem 0;
+  }
+
+  .hero .btn {
+    font-size: 1.1rem;
+    min-width: 200px;
+  }
+
+  .hero .btn-outline {
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+}
+
+.hero .btn-outline:hover {
+    color: #FFFFFF;
+    border-color: #FFFFFF;
+  }
+
+
+  .btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin: 0.5rem;
+  }
+
+/* Botón primario (azul) */
+.btn {
+    background-color: transparent;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+}
+  
+  .btn:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+  }
+
+/* Botón outline (borde azul) */
+.btn-outline {
+    background-color: transparent;
+    color: #3498db;
+    border: 2px solid #3498db;
+  }
+
+.btn-outline:hover {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: #2980b9;
+    border-color: #2980b9;
+    transform: translateY(-2px);
+  }
+  
+  .servicios {
+    padding: 4rem 0;
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Esto centrará el contenido interno */
+  }
+  
+  .servicios h2 {
+    font-size: 2rem;
+    color: #3498db;
+    margin-bottom: 2rem;
+  }
+  
+  .servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+    padding: 0 20px; /* Padding lateral para móviles */
+    justify-items: center; /* Centra los elementos de la grid */
+  } 
+
+  /* Sección Por qué Elegirnos */
+.porque-elegirnos {
+    padding: 4rem 0;
+    text-align: center;
+    width: 100%;
+    max-width: 1200px; /* Ancho máximo para el contenido */
+    margin: 0 auto; /* Centrado horizontal */
+  }
+
+  .porque-elegirnos h2 {
+    font-size: 2rem;
+    color: #3498db;
+    margin-bottom: 2rem;
+  }
+
+  .razones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem; /* Padding lateral para móviles */
+  }
+  
+  .servicio-card {
+    background-color: rgb(211, 211, 211);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .servicio-card img {
+    width: 100%;
+    height: auto;
+  }
+  
+  .razones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .razon-card {
+    text-align: center;
+    background-color: rgb(211, 211, 211);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .contacto {
+    padding: 4rem 0;
+    text-align: center;
+    background-color: #3f97f0;
+    
+  }
+  
+  footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+  }
+  
+  footer p {
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .hero {
+      padding: 3rem 0;
+    }
+  
+    .hero h1 {
+      font-size: 2rem;
+    }
+  
+    .servicios h2 {
+      font-size: 1.5rem;
+    }
+  
+    .servicio-card h3 {
+      font-size: 1.1rem;
+    }
+  
+    .razon-card i {
+      font-size: 2rem;
+    }
+  }
