@@ -4,8 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Usuario from './components/Usuario';
 import Inicio from './components/Inicio';
 import LoginRegister from './components/LoginRegister';
-
-
+import QuienesSomos from './components/QuienesSomos';
 
 function App() {
   return (
@@ -15,6 +14,7 @@ function App() {
           <Route path="/Usuario" element={<Usuario/>} />
           <Route path="/" element={<Inicio/>} />
           <Route path="/LoginRegister" element={<LoginRegister/>} />
+          <Route path="/QuienesSomos" element={<QuienesSomos/>} />
         </Routes>
       </div>
     </Router>

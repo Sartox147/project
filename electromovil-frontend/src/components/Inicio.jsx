@@ -25,11 +25,11 @@ const Inicio = () => {
                 {/* Hero Section */}
                 <section className="hero">
                     <div className="hero-content"> {/* Añade este contenedor interno */}
-                        <h1>Expertos en Reparación de Lavadoras y Neveras</h1>
+                        <h1 className="display-4 fw-bold mb-4">Expertos en Reparación de Lavadoras y Neveras</h1>
                         <p>Soluciones rápidas y confiables para sus electrodomésticos. Servicio profesional garantizado las 24 horas.</p>
                         <div className="hero-buttons">
-                            <a href="./Inicio/sesion.php" className="btn">Solicitar Servicio</a>
-                            <a href="../mas_informacion/quienes_somos.html" className="btn btn-outline">Más Información</a>
+                            <a href="/LoginRegister" className="btn">Solicitar Servicio</a>
+                            <a href="/QuienesSomos" className="btn btn-outline">Más Información</a>
                         </div>
                     </div>
                 </section>
