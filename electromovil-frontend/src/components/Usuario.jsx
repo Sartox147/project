@@ -19,7 +19,7 @@ const Usuario = () => {
                         <button onClick={() => window.location.href = '../perfil/perfil.html'} className="btn-profile">
                             <FaUser className="icon" />  Perfil
                         </button>
-                        <button onClick={() => window.location.href = '../index.html'} className="btn-logout">
+                        <button onClick={() => window.location.href = '/LoginRegister'} className="btn-logout">
                             Salir
                         </button>
                     </div>
@@ -128,4 +128,4 @@ const agendarServicio = () => {
     }
 };
 
-export default Usuario;
+export default Usuario; 

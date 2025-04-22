@@ -2,11 +2,16 @@ import React, { useEffect } from 'react';
 import '../assets/LoginRegister.css';
 import 'boxicons/css/boxicons.min.css';
 
+
 const LoginRegister = () => {
   useEffect(() => {
     const container = document.querySelector('.container');
     const registerBtn = document.querySelector('.register-btn');
     const loginBtn = document.querySelector('.login-btn');
+
+    if (window.location.hash === '#register') {
+      container.classList.add('active');
+    }
 
     registerBtn?.addEventListener('click', () => {
       container.classList.add('active');
@@ -21,6 +26,7 @@ const LoginRegister = () => {
       registerBtn?.removeEventListener('click', () => { });
       loginBtn?.removeEventListener('click', () => { });
     };
+    
   }, []);
 
   return (

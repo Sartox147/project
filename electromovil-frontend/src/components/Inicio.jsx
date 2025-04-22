@@ -14,11 +14,11 @@ const Inicio = () => {
                     <div className="nav-links">
                         <a href="#servicios" className="login-btn">Servicios</a>
                         <a href="#porque-elegirnos" className="login-btn">Por qué Elegirnos</a>
-                        <a href="./Inicio/sesion.php" className="login-btn">Iniciar Sesión</a>
-                        <a href="./Inicio/sesion.php" className="login-btn">Registrarse</a>
+                        <a href= "/LoginRegister" className="login-btn">Iniciar Sesión</a>
+                        <a href="/LoginRegister#register" className="login-btn">Registrarse</a>
                     </div>
-                </nav>
-            </header>
+                </nav>  
+            </header>   
 
             {/* Main content */}
             <main>
