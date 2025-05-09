@@ -107,4 +107,4 @@ Diseñar, desarrollar e implementar un **aplicativo web** para la gestión de se
 
 ## ✉️ **Contacto**  
 📧 **Correo electrónico**: electromovil@electromovil.com  
-🔗 **GitHub**: sartox147
+🔗 **GitHub**: **sartox147-AndresRodriguez11-jonsegu**
