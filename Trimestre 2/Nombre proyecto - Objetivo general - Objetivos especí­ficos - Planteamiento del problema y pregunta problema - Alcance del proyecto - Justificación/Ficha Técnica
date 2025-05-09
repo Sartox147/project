@@ -1,0 +1,51 @@
+Sistema De Gestión De Servicios Técnicos Para El Mantenimiento y Reparación De Neveras Y Lavadoras A Domicilio
+ElectroMovil
+ 
+ 
+
+
+  
+
+Jonathan David Segura Albarracín
+Juan Pablo Ballen Gonzalez
+ 
+ 
+
+
+
+ 
+Centro de Electricidad, Electrónica y Telecomunicaciones CEET
+Servicio Nacional de Aprendizaje - SENA 
+
+Tecnologo en Analisis y desarrollo de software
+ Ficha 2823506 Grupo 1
+
+
+
+
+Junio 2024
+Introducción
+El proceso de contratación de un profesional para llevar cabo un servicio tecnico de neveras y lavadoras a domicilio, siempre ha sido realizado de manera informal entre el cliente y el profesional; comúnmente el técnico ofrece sus servicios mediante tarjetas con la descripción de sus servicios (en el mejor de los casos hacen uso de redes sociales o paginas web) y un numero de contacto, método que presenta un único medio de contacto que ocasionalmente suele presentar fallas debido a la desactualización del medio de contacto, resultando ser más eficiente la comunicación voz a voz entre clientes, pero a su vez presentando diversos inconvenientes; por ejemplo, este método de contacto puede llegar a generar inseguridad y falta de control de quien realiza el servicio pues no hay ningún tipo de certificado que asegure que el técnico cuenta con las habilidades propias y necesarias para llevar a cabo la labor por la cual se le contrató, por otro lado, no es posible asegurar de manera previa la identidad, antecedentes y desempeño laboral de la persona contratada. Uno de los factores en que se presentan más constantemente novedades suele ser el posible abuso al cobrar una tarifa exagerada por el servicio prestado, ya sea por la falta de conocimiento por parte del contratante o por las posibles novedades que se presenten durante el servicio que “justifiquen” el cobro adicional de dichas novedades. Finalmente la falta de garantía ante un posible daño o mala intervención por parte del técnico es un factor crucial, pues ante este tipo de situaciones es prácticamente imposible que alguien responda.
+Ahora bien, las grandes empresas comercializadoras de neveras y lavadoras, ofrecen servicio técnico a domicilio, así como también empresas especializadas en la reparación y mantenimiento de los electrodomésticos mencionados, pero su proceso de contratación y comunicación entre el cliente y el técnico continúa presentando faltas, como lentitud en las respuestas, falta de información del técnico, errores de comunicación o errores en la solicitud del servicio, etc; además el proceso de gestión y seguimiento del proceso de servicio técnico deja mucho que desear, en algunos casos siendo incluso inexistente. Adicionalmente y en un intento de solucionar los inconvenientes que se presentan, las empresas hacen uso de diversas herramientas o plataformas para cada paso a seguir durante el proceso. Iniciando por la publicación de los tipos de servicios disponibles los cuales pueden ser a través de redes sociales o páginas web que conducen a una segunda plataforma al presentar una solicitud de servicio. Al realizar un seguimiento del servicio, en el mejor de los casos puede haber un apartado que especifique el estado del servicio o en muchos casos está ni siquiera existe. Usualmente la comunicación se dará a través de servicios de mensajería como WhatsApp y finalmente el proceso de pago se realiza en otro apartado, así como también el envío de la factura electrónica se termina realizando en un aplicativo diferente como el correo electrónico.
+Teniendo en cuenta este escenario, el Sistema De Gestión De Servicios Técnicos Para El Mantenimiento y Reparación De Neveras Y Lavadoras A Domicilio se centra en la optimización de la gestión del servicio técnico solicitado de principio a fin, integrando diversas tecnologías y agrupando los diferentes procesos en un solo aplicativo. Parte de las optimizaciones a lograr consiste en facilitar el proceso de contacto y solicitud de servicio técnico para el usuario, al hacer uso de un solo aplicativo en el cual encontrará todos los servicios disponibles y un formulario que le permitirá enviar todas las especificaciones relacionadas con el electrodoméstico, así mismo podrá realizar un seguimiento constante del estado del servicio el cual contará con las especificaciones del técnico que prestará el servicio así como su ubicación y en qué estado se encuentra el electrodoméstico en el momento de la consulta, finalmente contará con un proceso de pago integrado a la aplicación enlazado al envío de una factura y así mismo la garantía correspondiente. Durante el proceso el cliente podrá tener contacto y comunicación a través del aplicativo, así mismo se llevan controles de seguridad al iniciar el servicio identificando la identidad del técnico y controlando el fin del servicio cuando sea finalizado. El proceso de consulta del estado de servicio será posible gracias al almacenamiento, actualización y gestión de datos en la plataforma, tanto de las reparaciones como del personal contratado.
+Pregunta:
+¿Es necesario un sistema de gestión que optimice y unifique todo el proceso relacionado con la contratación y seguimiento de un servicio técnico a domicilio de lavadoras y neveras?
+
+Planteamiento del problema:
+El actual sistema de contacto, comunicación y contratación de un profesional que lleve a cabo diversas actividades relacionadas con el servicio técnico de lavadoras y neveras a domicilio se divide en dos, el tradicional basado en una comunicación de voz a voz que resulta la manera más confiable de contactar con un profesional para posteriormente realizar la contratación del técnico del cual no tenemos seguridad tanto en sus habilidades como en una garantía final del servicio y en segundo lugar existe el proceso virtual usado por las empresas, que en muchos casos se queda corto al tener separación en los diversos procesos que conlleva la contratación, seguimiento y pago de un servicio tecnico a domicilio, generando contratiempos durante el paso a paso y quedando a merced de la plataforma que se esté utilizando, la cual si en un escenario deja de funcionar, afectará directamente el proceso del servicio.
+
+Justificación del proyecto:
+Este proyecto se enfocará en el diseño, desarrollo e implementación de un aplicativo web que solucione y optimice los procesos de contacto, contratación, comunicación y seguimiento de los servicios prestados por un profesional de mantenimiento y reparación de lavadoras y neveras a domicilio, ya que, el actual sistema empleado para realizar este proceso no aprovecha las ventajas tecnológicas presentes hoy en dia o las emplea de manera ineficiente. Mediante la implementación de un sistema que gestione los diferentes servicios que ofrezca una empresa y posteriormente sean solicitados por los usuarios, será posible llevar un control de todo el proceso gracias a la integración de diversos módulos en un solo aplicativo.
+Alcance del proyecto:
+El proyecto se enfocará en el diseño, desarrollo e implementación de un aplicativo web que funciona de intermediario entre el cliente y el técnico. Centrado específicamente en la gestión de los servicios que el técnico llevará a cabo, y las solicitudes del cliente. Integrando diversos módulos que serán fáciles de usar y mejoran cada proceso. Gracias al almacenamiento de los servicios que se lleven a cabo y al monitoreo del mismo, será posible brindar un estado en tiempo real desde la programación de la visita hasta la confirmación final del pago del servicio y envío de la factura electrónica; pasando por diversos puntos de control y verificación del lado tanto del técnico como del cliente.
+
+Objetivos del Proyecto
+Objetivo General:
+Diseñar, desarrollar e implementar un aplicativo web para la gestión del contacto, contratación, comunicación, seguimiento y pago de los servicios de un profesional de servicio técnico de lavadoras y neveras a domicilio.
+
+Objetivos específicos:
+Implementar un sistema de registro y autentificación de usuarios, que almacene la información en las respectivas bases de datos para los Clientes, Técnicos, Servicios Solicitados y Órdenes de Trabajo.
+Desarrollar un sistema de almacenamiento y seguimiento de los servicios activos y completados a través del aplicativo, que genere reportes totales o parciales acerca del estado en que se encuentra el servicio.
+Proporcionar un módulo de consulta con la información relacionada al técnico que realizará el servicio, determinando aspectos como su ubicación al tener ya asignada una orden de servicio y así poder realizar un seguimiento y progreso del servicio. Además permitirá generar un código de control de seguridad para dar inicio al servicio.
+Optimizar la comunicación entre el Cliente y el Técnico, generando un sistema de comunicación basado en chat de texto.
+Generar un módulo de medios de pago, el cual permita dar soporte a diversos métodos, para posteriormente realizar el envío de la factura o recibo de pago y la respectiva garantía del servicio realizado.
