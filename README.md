@@ -10,7 +10,7 @@
 ## 📌 **Autores**  
 - **Jonathan David Segura Albarracín** 👨‍💻  
 - **Juan Pablo Ballen Gonzalez** 👨‍💻
-- **Diader Andres** 👨‍💻
+- **Diader Andrés Rodríguez Ávila** 👨‍💻
 
 ## 🏛️ **Institución**  
 📚 **Centro de Electricidad, Electrónica y Telecomunicaciones (CEET)**  
