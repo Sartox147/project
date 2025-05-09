@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="" alt="ElectroMóvil Logo" width="300">
+</div>
+
 # 🛠️ Sistema De Gestión De Servicios Técnicos 🏠  
 ### **ElectroMóvil** ⚡🔧  
 
@@ -5,7 +9,8 @@
 
 ## 📌 **Autores**  
 - **Jonathan David Segura Albarracín** 👨‍💻  
-- **Juan Pablo Ballen Gonzalez** 👨‍💻  
+- **Juan Pablo Ballen Gonzalez** 👨‍💻
+- **Diader Andres** 👨‍💻
 
 ## 🏛️ **Institución**  
 📚 **Centro de Electricidad, Electrónica y Telecomunicaciones (CEET)**  
@@ -13,10 +18,7 @@
 
 ## 📚 **Programa**  
 💻 **Tecnólogo en Análisis y Desarrollo de Software**  
-📋 **Ficha: 2823506 | Grupo: 1**  
-
-## 📅 **Fecha**  
-🗓️ **Junio 2024**  
+📋 **Ficha: 2823506 | Grupo: 1**    
 
 ---
 
@@ -93,24 +95,16 @@ Diseñar, desarrollar e implementar un **aplicativo web** para la gestión de se
 ---
 
 ## 🛠️ **Tecnologías Utilizadas**  
-(Agrega aquí las tecnologías que usaste, por ejemplo:)  
-- **Frontend**: HTML, CSS, JavaScript, React  
-- **Backend**: Node.js, Express  
+- **Frontend**: React, CSS, JavaScript  
+- **Backend**: Laravel  
 - **Base de datos**: MySQL/MongoDB  
-- **Despliegue**: GitHub Pages, Netlify, Vercel  
+- **Despliegue**: GitHub Pages  
 
 ---
 
 ## 📂 **Estructura del Proyecto**  
-(Agrega una breve descripción de la estructura de archivos si lo deseas)  
-
----
-
-## 📜 **Licencia**  
-(Agrega la licencia de tu proyecto, ej: MIT, Apache, etc.)  
-
----
+---- 
 
 ## ✉️ **Contacto**  
-📧 **Correo electrónico**: [tucorreo@example.com]  
-🔗 **GitHub**: [tuusuario](https://github.com/tuusuario)  
+📧 **Correo electrónico**: electromovil@electromovil.com  
+🔗 **GitHub**: sartox147
