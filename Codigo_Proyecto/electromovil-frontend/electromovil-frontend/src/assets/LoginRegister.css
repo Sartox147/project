@@ -112,19 +112,20 @@
  }
  
  .social-icons{
-     display: flex;
-     justify-content: center;
- }
- 
-     .social-icons a{
-         display: inline-flex;
-         padding: 10px;
-         border: 2px solid #ccc;
-         border-radius: 8px;
-         font-size: 24px;
-         color: #333;
-         margin: 0 8px;
-     }
+    display: flex;
+    justify-content: center;
+}
+
+    .social-icons a{
+        display: inline-flex;
+        padding: 10px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 24px;
+        color: #333;
+        margin: 0 8px;
+    }
+
  
  .toggle-box{
      position: absolute;

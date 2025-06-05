@@ -33,10 +33,10 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Solo elimina el token si existe
       localStorage.removeItem('auth_token');
-      
+
       // Verifica si el error viene del endpoint de login
       const isLoginRequest = error.config.url.includes('/login');
-      
+
       if (!isLoginRequest) {
         // Redirige solo si no es una petición de login
         window.location.href = '/login';
@@ -62,9 +62,9 @@ const apiService = {
     await axios.get('http://127.0.0.1:8000/sanctum/csrf-cookie', {
       withCredentials: true
     });
-    
+
     const response = await api.post('/login', credentials);
-    
+
     // Guardar token (ajusta según la estructura de tu API)
     if (response.data.token) {
       localStorage.setItem('auth_token', response.data.token);
@@ -88,14 +88,27 @@ const apiService = {
     try {
       const token = localStorage.getItem('auth_token');
       if (!token) return false;
-      
+
       // Usar el endpoint /check-auth que ya tienes
       const response = await api.get('/check-auth');
       return response.data.authenticated;
     } catch (error) {
       return false;
     }
-  }
+  },
+  async getUserById(id) {
+    return api.get(`/users/${id}`);
+  },
+
+  async getServicios() {
+    return api.get('/servicios');
+  },
+
+  async getAppliances() {
+    return api.get('/appliances'); // Asegúrate de que esta ruta exista
+  },
+
 };
 
+export { api };
 export default apiService;
