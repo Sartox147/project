@@ -14,11 +14,11 @@ const Inicio = () => {
                     <div className="nav-links">
                         <a href="#servicios" className="login-btn">Servicios</a>
                         <a href="#porque-elegirnos" className="login-btn">Por qué Elegirnos</a>
-                        <a href= "/LoginRegister" className="login-btn">Iniciar Sesión</a>
+                        <a href="/LoginRegister" className="login-btn">Iniciar Sesión</a>
                         <a href="/LoginRegister#register" className="login-btn">Registrarse</a>
                     </div>
-                </nav>  
-            </header>   
+                </nav>
+            </header>
 
             {/* Main content */}
             <main>
@@ -88,11 +88,18 @@ const Inicio = () => {
             </main>
 
             {/* Footer */}
-            <footer>
-                <p>&copy; 2024 ElectroMovil. Todos los derechos reservados.</p>
-            </footer>
+        <footer className="app-footer">
+          <div className="footer-content">
+            <p>&copy; {new Date().getFullYear()} ElectroMovil. Todos los derechos reservados.</p>
+            <div className="footer-links">
+              <a href="#">Términos y condiciones</a>
+              <a href="#">Política de privacidad</a>
+              <a href="#">Contacto</a>
+            </div>
+          </div>
+        </footer>
         </div>
     );
 };
 
-export default Inicio;
+export default Inicio;
