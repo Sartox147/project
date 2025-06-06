@@ -4,12 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ApplianceController;
 
 // Rutas públicas
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::apiResource('appliances', ApplianceController::class);
+
 // Rutas protegidas
 
 Route::middleware('auth:sanctum')->get('/check-auth', function (Request $request) {

@@ -210,13 +210,6 @@ const LoginRegister = ({ onLoginSuccess }) => {
             <button type="submit" className="btn" disabled={isLoading}>
               {isLoading ? 'Procesando...' : 'Iniciar sesión'}
             </button>
-            <p>O inicia sesion con: </p>
-                <div class="social-icons">
-                    <a href="#"><i class='bx bxl-google' ></i></a>
-                    <a href="#"><i class='bx bxl-facebook' ></i></a>
-                    <a href="#"><i class='bx bxl-github' ></i></a>
-                    <a href="#"><i class='bx bxl-linkedin' ></i></a>
-                </div>
           </form>
         </div>
 
@@ -293,14 +286,6 @@ const LoginRegister = ({ onLoginSuccess }) => {
             <h1>¡Hola de nuevo!</h1>
             <p>¿Ya tienes una cuenta?</p>
             <button className="btn login-btn">Iniciar sesión</button>
-
-            <p>o registrate con:</p>
-                <div class="social-icons">
-                    <a href="#"><i class='bx bxl-google' ></i></a>
-                    <a href="#"><i class='bx bxl-facebook' ></i></a>
-                    <a href="#"><i class='bx bxl-github' ></i></a>
-                    <a href="#"><i class='bx bxl-linkedin' ></i></a>
-                </div>
           </div>
         </div>
       </div>
