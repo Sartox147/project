@@ -107,7 +107,21 @@ const apiService = {
   async getAppliances() {
     return api.get('/appliances'); // Asegúrate de que esta ruta exista
   },
+   async getTechnicians() {
+    return api.get('/users/by-role?role=technician');
+  },
 
+  // Nuevo: editar servicio
+  async updateServicio(id, data) {
+    return api.put(`/servicios/${id}`, data);
+  },
+
+  // Nuevo: asignar técnico a servicio
+  async asignarTecnico(servicioId, tecnicoId) {
+    return api.post(`/servicios/${servicioId}/asignar-tecnico`, {
+      tecnico_id: tecnicoId,
+    });
+  },
 };
 
 export { api };

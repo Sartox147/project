@@ -87,7 +87,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
 
       // Redirigir según rol
       const redirectPath = {
-        'admin': '/admin/dashboard',
+        'admin': '/admin',
         'tecnico': '/tecnico',
         'cliente': '/usuario'
       }[user.role] || '/usuario';
