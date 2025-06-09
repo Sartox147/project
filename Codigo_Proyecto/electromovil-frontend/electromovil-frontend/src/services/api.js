@@ -105,10 +105,10 @@ const apiService = {
   },
 
   async getAppliances() {
-    return api.get('/appliances'); // Asegúrate de que esta ruta exista
+    return api.get('/appliances'); // electrodomesticos
   },
    async getTechnicians() {
-    return api.get('/users/by-role?role=technician');
+    return api.get('/users/by-role?role=tecnico');
   },
 
   // Nuevo: editar servicio
