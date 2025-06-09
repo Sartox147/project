@@ -1,36 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, Modal, Alert, Badge } from 'react-bootstrap';
-import apiService from '../../services/api'; // Asegúrate de que apunte a api.js
+import apiService, { api } from '../../services/api.js'; // solo necesitas esta línea
 
 const ServicesManagement = () => {
   const [services, setServices] = useState([]);
-  const [tecnicos, setTecnicos] = useState([]);
+  const [filteredServices, setFilteredServices] = useState([]);
+  const [technicians, setTechnicians] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentService, setCurrentService] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: '', variant: 'success' });
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchServices();
-    fetchTecnicos();
+    fetchTechnicians();
   }, []);
+
+  useEffect(() => {
+    filterServices(searchTerm);
+  }, [searchTerm, services]);
 
   const fetchServices = async () => {
     try {
       const response = await apiService.getServicios();
       setServices(response.data);
+      setFilteredServices(response.data); // Inicialmente, los servicios filtrados son todos los servicios
     } catch (error) {
       showAlert('Error al cargar servicios', 'danger');
     }
   };
 
-  const fetchTecnicos = async () => {
-    try {
-      const response = await apiService.get('/users/by-role?role=tecnico');
-      setTecnicos(response.data);
-    } catch (error) {
-      showAlert('Error al cargar técnicos', 'danger');
-    }
-  };
+const fetchTechnicians = async () => {
+  try {
+    const response = await api.get('/users/by-role?role=tecnico'); // Cambia 'technician' a 'tecnico'
+    setTechnicians(response.data);
+  } catch (error) {
+    showAlert('Error al cargar técnicos', 'danger');
+  }
+};
 
   const showAlert = (message, variant) => {
     setAlert({ show: true, message, variant });
@@ -40,7 +47,7 @@ const ServicesManagement = () => {
   const handleEdit = (service) => {
     setCurrentService({
       ...service,
-      tecnicoId: service.tecnico_id || '',
+      technicianId: service.tecnico_id || '',
       description: service.descripcion_problema,
       status: service.estado,
       notes: service.notas || '',
@@ -59,7 +66,7 @@ const ServicesManagement = () => {
 
   const handleStatusChange = async (serviceId, newStatus) => {
     try {
-      await apiService.put(`/servicios/${serviceId}`, { estado: newStatus });
+      await api.put(`/servicios/${serviceId}`, { estado: newStatus });
       fetchServices();
       showAlert('Estado del servicio actualizado', 'success');
     } catch (error) {
@@ -69,6 +76,7 @@ const ServicesManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const payload = {
         tipo_equipo: currentService.tipo_equipo,
@@ -82,13 +90,13 @@ const ServicesManagement = () => {
         fecha_solicitud: currentService.fecha_solicitud,
         fecha_atendido: currentService.fecha_atendido,
         fecha_completado: currentService.fecha_completado,
-        tecnico_id: currentService.tecnicoId || null,
+        tecnico_id: currentService.technicianId || null,
       };
 
       if (currentService.id) {
-        await apiService.put(`/servicios/${currentService.id}`, payload);
+        await api.put(`/servicios/${currentService.id}`, payload);
       } else {
-        await apiService.post('/servicios', payload);
+        await api.post('/servicios', payload);
       }
 
       setShowModal(false);
@@ -109,6 +117,29 @@ const ServicesManagement = () => {
     return <Badge bg={variants[status]}>{status.replace('_', ' ')}</Badge>;
   };
 
+  const filterServices = (term) => {
+    const lowerTerm = term.toLowerCase().trim();
+
+    const filtered = services.filter(service => {
+      const tecnicoName = service.tecnico?.name?.toLowerCase() || '';
+      const tieneTecnico = tecnicoName.length > 0;
+
+      const matchesTecnicoNoAsignado = lowerTerm === 'no asignado' && !tieneTecnico;
+
+      return (
+        service.tipo_equipo?.toLowerCase().includes(lowerTerm) ||
+        service.marca?.toLowerCase().includes(lowerTerm) ||
+        service.modelo?.toLowerCase().includes(lowerTerm) ||
+        service.descripcion_problema?.toLowerCase().includes(lowerTerm) ||
+        service.estado?.toLowerCase().includes(lowerTerm) ||
+        matchesTecnicoNoAsignado ||   // matches "No asignado"
+        tecnicoName.includes(lowerTerm)  // busca por nombre de técnico
+      );
+    });
+
+    setFilteredServices(filtered);
+  };
+
   return (
     <div className="p-4">
       {alert.show && <Alert variant={alert.variant}>{alert.message}</Alert>}
@@ -122,6 +153,14 @@ const ServicesManagement = () => {
           Crear Servicio
         </Button>
       </div>
+
+      <Form.Control
+        type="text"
+        placeholder="Buscar por equipo, marca, tecnico, descripción, estado..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="mb-4"
+      />
 
       <Table striped bordered hover responsive>
         <thead>
@@ -138,34 +177,53 @@ const ServicesManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {services.map(service => (
-            <tr key={service.id}>
-              <td>{service.id}</td>
-              <td>{service.tipo_equipo}</td>
-              <td>{service.marca}</td>
-              <td>{service.modelo}</td>
-              <td>{service.descripcion_problema}</td>
-              <td>{service.tecnico?.name || 'No asignado'}</td>
-              <td>{getStatusBadge(service.estado)}</td>
-              <td>{service.fecha_solicitud}</td>
-              <td>
-                <Button variant="info" size="sm" onClick={() => handleEdit(service)}>Editar</Button>
-                <div className="btn-group ms-2">
-                  {['pendiente', 'en_proceso', 'completado'].map(status => (
+          {filteredServices.length === 0 ? (
+            <tr>
+              <td colSpan="9" className="text-center">No se encontraron servicios.</td>
+            </tr>
+          ) : (
+            filteredServices.map(service => (
+              <tr key={service.id}>
+                <td>{service.id}</td>
+                <td>{service.tipo_equipo}</td>
+                <td>{service.marca}</td>
+                <td>{service.modelo}</td>
+                <td>{service.descripcion_problema}</td>
+                <td>{service.tecnico?.name || 'No asignado'}</td>
+                <td>{getStatusBadge(service.estado)}</td>
+                <td>{service.fecha_solicitud}</td>
+                <td>
+                  <Button variant="info" size="sm" onClick={() => handleEdit(service)}>Editar</Button>
+                  <div className="btn-group ms-2">
                     <Button
-                      key={status}
                       variant="outline-primary"
                       size="sm"
-                      onClick={() => handleStatusChange(service.id, status)}
-                      active={service.estado === status}
+                      onClick={() => handleStatusChange(service.id, 'pendiente')}
+                      active={service.estado === 'pendiente'}
                     >
-                      {status.replace('_', ' ')}
+                      Pendiente
                     </Button>
-                  ))}
-                </div>
-              </td>
-            </tr>
-          ))}
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={() => handleStatusChange(service.id, 'en_proceso')}
+                      active={service.estado === 'en_proceso'}
+                    >
+                      En Proceso
+                    </Button>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={() => handleStatusChange(service.id, 'completado')}
+                      active={service.estado === 'completado'}
+                    >
+                      Completado
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </Table>
 
@@ -179,12 +237,19 @@ const ServicesManagement = () => {
             <Form.Group className="mb-3">
               <Form.Label>Tipo de Equipo</Form.Label>
               <Form.Control
-                type="text"
+                as="select"
                 value={currentService?.tipo_equipo || ''}
                 onChange={(e) => setCurrentService({ ...currentService, tipo_equipo: e.target.value })}
                 required
-              />
+              >
+                <option value="" disabled hidden>
+                  Seleccione tipo de equipo
+                </option>
+                <option value="lavadora">Lavadora</option>
+                <option value="nevera">Nevera</option>
+              </Form.Control>
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Marca</Form.Label>
               <Form.Control
@@ -194,6 +259,7 @@ const ServicesManagement = () => {
                 required
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Modelo</Form.Label>
               <Form.Control
@@ -203,6 +269,7 @@ const ServicesManagement = () => {
                 required
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Descripción del Problema</Form.Label>
               <Form.Control
@@ -213,6 +280,7 @@ const ServicesManagement = () => {
                 required
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Estado</Form.Label>
               <Form.Select
@@ -226,18 +294,20 @@ const ServicesManagement = () => {
                 <option value="cancelado">Cancelado</option>
               </Form.Select>
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Asignar Técnico</Form.Label>
               <Form.Select
-                value={currentService?.tecnicoId || ''}
-                onChange={(e) => setCurrentService({ ...currentService, tecnicoId: e.target.value })}
+                value={currentService?.technicianId || ''}
+                onChange={(e) => setCurrentService({ ...currentService, technicianId: e.target.value })}
               >
                 <option value="">No asignado</option>
-                {tecnicos.map(tec => (
-                  <option key={tec.id} value={tec.id}>{tec.name}</option>
+                {technicians.map(tech => (
+                  <option key={tech.id} value={tech.id}>{tech.name}</option>
                 ))}
               </Form.Select>
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Diagnóstico</Form.Label>
               <Form.Control
@@ -247,6 +317,7 @@ const ServicesManagement = () => {
                 onChange={(e) => setCurrentService({ ...currentService, diagnostico: e.target.value })}
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Solución</Form.Label>
               <Form.Control
@@ -256,6 +327,7 @@ const ServicesManagement = () => {
                 onChange={(e) => setCurrentService({ ...currentService, solucion: e.target.value })}
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Costo</Form.Label>
               <Form.Control
@@ -266,6 +338,7 @@ const ServicesManagement = () => {
                 onChange={(e) => setCurrentService({ ...currentService, costo: e.target.value })}
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Fecha Solicitud</Form.Label>
               <Form.Control
@@ -274,6 +347,7 @@ const ServicesManagement = () => {
                 onChange={(e) => setCurrentService({ ...currentService, fecha_solicitud: e.target.value })}
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Fecha Atendido</Form.Label>
               <Form.Control
@@ -282,6 +356,7 @@ const ServicesManagement = () => {
                 onChange={(e) => setCurrentService({ ...currentService, fecha_atendido: e.target.value })}
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Fecha Completado</Form.Label>
               <Form.Control
@@ -290,6 +365,7 @@ const ServicesManagement = () => {
                 onChange={(e) => setCurrentService({ ...currentService, fecha_completado: e.target.value })}
               />
             </Form.Group>
+
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>

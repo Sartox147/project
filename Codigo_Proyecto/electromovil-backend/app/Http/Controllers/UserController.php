@@ -99,15 +99,15 @@ public function update(Request $request, User $user)
         $user->delete();
         return response()->noContent();
     }
-    public function indexByRole()
+    public function indexByRole(Request $request)
     {
-        $fields = ['id', 'name', 'email', 'phone', 'created_at'];
+    $role = $request->query('role'); // Asegúrate de que estás pasando el rol como parámetro
 
-        return response()->json([
-            'clientes' => User::where('role', 'cliente')->select($fields)->get(),
-            'tecnicos' => User::where('role', 'tecnico')->select($fields)->get()
-        ]);
+    $users = User::where('role', $role)->get(); // Filtra por el rol en español
+    return response()->json($users);
     }
+
+
     public function tecnicosDisponibles()
     {
         if (!auth()->user()->isAdmin()) {

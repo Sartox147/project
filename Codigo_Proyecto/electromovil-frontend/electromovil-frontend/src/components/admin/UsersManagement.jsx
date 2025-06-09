@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../../services/api';
+import { Modal, Button } from 'react-bootstrap';
 
 const UsersManagement = () => {
   const [users, setUsers] = useState([]);
@@ -10,6 +11,19 @@ const UsersManagement = () => {
     phone: '',
     address: ''
   });
+  const [addUserData, setAddUserData] = useState({
+    name: '',
+    email: '',
+    role: 'cliente',
+    phone: '0',
+    address: '0',
+    password: '',
+    password_confirmation: ''
+  });
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingUser , setEditingUser ] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchUsers = async () => {
     try {
@@ -28,11 +42,16 @@ const UsersManagement = () => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleAdd = async () => {
+  const handleAddChange = (e) => {
+    setAddUserData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleAddUser  = async () => {
     try {
-      await api.post('/users', formData); // Ajusta según tu backend
+      await api.post('/register', addUserData); // Ajusta según tu backend
       fetchUsers();
-      setFormData({ name: '', email: '', role: 'cliente', phone: '', address: '' });
+      setAddUserData({ name: '', email: '', password: '', password_confirmation: '' });
+      setShowAddModal(false);
     } catch (error) {
       console.error('Error al agregar usuario:', error);
     }
@@ -48,74 +67,46 @@ const UsersManagement = () => {
     }
   };
 
-  const handleEdit = async (user) => {
-    const updated = prompt("Editar nombre:", user.name);
-    if (updated && updated !== user.name) {
-      try {
-        await api.put(`/users/${user.id}`, { ...user, name: updated });
-        fetchUsers();
-      } catch (error) {
-        console.error('Error al editar usuario:', error);
-      }
+  const handleEdit = (user) => {
+    setEditingUser (user);
+    setFormData(user); // Cargar los datos del usuario en el formulario
+    setShowEditModal(true); // Mostrar el modal
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await api.put(`/users/${editingUser .id}`, formData);
+      fetchUsers();
+      setShowEditModal(false); // Cerrar el modal
+      setFormData({ name: '', email: '', role: 'cliente', phone: '', address: '' }); // Resetear el formulario
+    } catch (error) {
+      console.error('Error al editar usuario:', error);
     }
   };
+
+  const filteredUsers = users.filter(user => 
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="card p-4">
       <h2>Gestión de Usuarios</h2>
 
-      <div className="row g-2 mb-4">
-        <div className="col-md-3">
-          <input
-            name="name"
-            className="form-control"
-            placeholder="Nombre"
-            value={formData.name}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="col-md-3">
-          <input
-            name="email"
-            className="form-control"
-            placeholder="Correo electrónico"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="col-md-2">
-          <select
-            name="role"
-            className="form-select"
-            value={formData.role}
-            onChange={handleChange}
-          >
-            <option value="cliente">Cliente</option>
-            <option value="tecnico">Técnico</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        <div className="col-md-2">
-          <input
-            name="phone"
-            className="form-control"
-            placeholder="Teléfono"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="col-md-2">
-          <input
-            name="address"
-            className="form-control"
-            placeholder="Dirección"
-            value={formData.address}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="col-md-12 text-end">
-          <button onClick={handleAdd} className="btn btn-primary">Agregar</button>
-        </div>
+      <div className="mb-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Buscar por nombre o correo"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <div className="mb-3">
+        <Button variant="primary" onClick={() => setShowAddModal(true)}>
+          Añadir Usuario
+        </Button>
       </div>
 
       <div className="table-responsive">
@@ -132,12 +123,12 @@ const UsersManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {users.length === 0 ? (
+            {filteredUsers.length === 0 ? (
               <tr>
                 <td colSpan="7" className="text-center">No hay usuarios registrados.</td>
               </tr>
             ) : (
-              users.map((user, index) => (
+              filteredUsers.map((user, index) => (
                 <tr key={user.id}>
                   <td>{index + 1}</td>
                   <td>{user.name}</td>
@@ -157,6 +148,126 @@ const UsersManagement = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal para añadir usuario */}
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Crear Nuevo Usuario</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="mb-3">
+            <input
+              name="name"
+              className="form-control"
+              placeholder="Nombre"
+              value={addUserData.name}
+              onChange={handleAddChange}
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              name="email"
+              className="form-control"
+              placeholder="Correo electrónico"
+              value={addUserData.email}
+              onChange={handleAddChange}
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              name="password"
+              type="password"
+              className="form-control"
+              placeholder="Contraseña"
+              value={addUserData.password}
+              onChange={handleAddChange}
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              name="password_confirmation"
+              type="password"
+              className="form-control"
+              placeholder="Confirmar Contraseña"
+              value={addUserData.password_confirmation}
+              onChange={handleAddChange}
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+            Cerrar
+          </Button>
+          <Button variant="primary" onClick={handleAddUser }>
+            Crear Usuario
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal para editar usuario */}
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editar Usuario</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="mb-3">
+            <input
+              name="name"
+              className="form-control"
+              placeholder="Nombre"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              name="email"
+              className="form-control"
+              placeholder="Correo electrónico"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <select
+              name="role"
+              className="form-select"
+              value={formData.role}
+              onChange={handleChange}
+            >
+              <option value="cliente">Cliente</option>
+              <option value="tecnico">Técnico</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <input
+              name="phone"
+              className="form-control"
+              placeholder="Teléfono"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              name="address"
+              className="form-control"
+              placeholder="Dirección"
+              value={formData.address}
+              onChange={handleChange}
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Cerrar
+          </Button>
+          <Button variant="primary" onClick={handleUpdate}>
+            Guardar Cambios
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
