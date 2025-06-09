@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { FaUser, FaPlus, FaTrash, FaTools, FaCalendarAlt, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaUser, FaPlus, FaEdit, FaSnowflake, FaTshirt, FaTrash, FaTools, FaCalendarAlt, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
 import '../assets/Usuario.css';
@@ -55,13 +55,23 @@ const Usuario = () => {
     return false;
   };
 
+  const [userIsLoggedIn, setUserIsLoggedIn] = useState(() => {
+    // Al cargar el componente, verificamos si hay token (o lo que uses)
+    return Boolean(localStorage.getItem('auth_token'));
+  });
+
   const resetInactivityTimer = () => {
     if (inactivityTimer) clearTimeout(inactivityTimer);
-    setInactivityTimer(setTimeout(() => {
-      handleLogout();
-      alert('Has sido desconectado por inactividad');
-    }, INACTIVITY_TIMEOUT));
+
+    // Solo poner el timer si el usuario está activo / logueado
+    if (userIsLoggedIn) {
+      setInactivityTimer(setTimeout(() => {
+        handleLogout();
+        alert('Has sido desconectado por inactividad');
+      }, INACTIVITY_TIMEOUT));
+    }
   };
+
 
   const handleUserActivity = () => resetInactivityTimer();
 
@@ -89,6 +99,8 @@ const Usuario = () => {
 
   const handleLogout = async () => {
     try {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      setInactivityTimer(null);
       await api.post('/logout');
       localStorage.removeItem('auth_token');
       navigate('/LoginRegister', { state: { logoutSuccess: true } });
@@ -103,6 +115,7 @@ const Usuario = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
+
         const [userResponse, serviciosResponse, appliancesResponse] = await Promise.all([
           api.get('/me'),
           api.get('/servicios'),
@@ -111,6 +124,7 @@ const Usuario = () => {
 
         setUserData(prev => ({
           ...prev,
+          id: userResponse.data.id || '',
           name: userResponse.data.name || '',
           email: userResponse.data.email || '',
           phone: userResponse.data.phone || '',
@@ -147,6 +161,16 @@ const Usuario = () => {
     const { name, value } = e.target;
     setServiceData(prev => ({ ...prev, [name]: value }));
   };
+  const buildUpdatePayload = (data) => {
+    const payload = {};
+    for (const [key, value] of Object.entries(data)) {
+      // Ignora 'id', 'current_password' o campos vacíos
+      if (key !== 'id' && key !== 'current_password' && value !== '') {
+        payload[key] = value;
+      }
+    }
+    return payload;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -155,7 +179,11 @@ const Usuario = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.put('/user/update', userData);
+      const originalEmail = userData.email; // Guarda el email original antes de la actualización
+      const dataToUpdate = buildUpdatePayload(userData);
+
+      const response = await api.put(`/users/${userData.id}`, dataToUpdate);
+
       setSuccessMessage('Perfil actualizado correctamente');
       setUserData(prev => ({
         ...prev,
@@ -163,9 +191,18 @@ const Usuario = () => {
         password: '',
         password_confirmation: ''
       }));
+
+      // Si cambió el email, cerrar sesión
+      if (dataToUpdate.email && dataToUpdate.email !== originalEmail) {
+        alert('Has cambiado tu correo, por seguridad debes iniciar sesión de nuevo.');
+        await handleLogout();
+        return; // Salir para que no vuelva a fetchUserData
+      }
+
       await fetchUserData();
     } catch (error) {
       if (!checkAuthError(error)) {
+        console.log('Errores desde Laravel:', error.response?.data);
         setErrors(error.response?.data?.errors || { general: 'Error al actualizar perfil' });
       }
     } finally {
@@ -186,8 +223,12 @@ const Usuario = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
+
       Object.entries(newAppliance).forEach(([key, value]) => {
-        if (value) formData.append(key, value);
+        if (value) {
+          const backendKey = key === 'purchaseDate' ? 'purchase_date' : key;
+          formData.append(backendKey, value);
+        }
       });
 
       const response = await api.post('/appliances', formData, {
@@ -217,6 +258,17 @@ const Usuario = () => {
     } catch (error) {
       if (!checkAuthError(error)) {
         alert('Error al eliminar electrodoméstico');
+      }
+    }
+  };
+
+  const updateAppliance = async (id, updatedData) => {
+    try {
+      const response = await api.put(`/appliances/${id}`, updatedData);
+      setAppliances(prev => prev.map(app => app.id === id ? response.data : app));
+    } catch (error) {
+      if (!checkAuthError(error)) {
+        alert('Error al actualizar electrodoméstico');
       }
     }
   };
@@ -404,7 +456,17 @@ const Usuario = () => {
                       <img src={appliance.image_url} alt={appliance.type} />
                     ) : (
                       <div className="default-image">
-                        {appliance.type === 'nevera' ? '❄️' : '🧺'}
+                        {appliance.image ? (
+                          <img
+                            src={appliance.image}
+                            alt={appliance.type}
+                            className="w-20 h-20 object-cover rounded-lg"
+                          />
+                        ) : (
+                          <span className="text-4xl">
+                            {appliance.type === 'nevera' ? <FaSnowflake /> : <FaTshirt />}
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>
@@ -412,8 +474,11 @@ const Usuario = () => {
                     <h3>{appliance.type.charAt(0).toUpperCase() + appliance.type.slice(1)}</h3>
                     <p><strong>Marca:</strong> {appliance.brand}</p>
                     <p><strong>Modelo:</strong> {appliance.model}</p>
-                    <p><strong>Comprado:</strong> {new Date(appliance.purchase_date).toLocaleDateString()}</p>
+                    <p><strong>Comprado:</strong> {appliance.purchase_date ? new Date(appliance.purchase_date).toLocaleDateString() : 'No especificado'}</p>
                   </div>
+                  <button className="edit-btn" onClick={() => updateAppliance(appliance)}>
+                    <FaEdit />
+                  </button>
                   <button className="delete-btn" onClick={() => deleteAppliance(appliance.id)}>
                     <FaTrash />
                   </button>

@@ -9,16 +9,20 @@ const Inicio = () => {
         <div>
             {/* Header */}
             <header>
-                <nav >
+                <nav>
                     <a href="/" className="logo">ElectroMovil</a>
+
+                    <input type="checkbox" id="menu-toggle" className="menu-toggle" />
+                    <label htmlFor="menu-toggle" className="menu-icon">&#9776;</label>
+
                     <div className="nav-links">
                         <a href="#servicios" className="login-btn">Servicios</a>
                         <a href="#porque-elegirnos" className="login-btn">Por qué Elegirnos</a>
-                        <a href= "/LoginRegister" className="login-btn">Iniciar Sesión</a>
+                        <a href="/LoginRegister" className="login-btn">Iniciar Sesión</a>
                         <a href="/LoginRegister#register" className="login-btn">Registrarse</a>
                     </div>
-                </nav>  
-            </header>   
+                </nav>
+            </header>
 
             {/* Main content */}
             <main>
@@ -95,4 +99,4 @@ const Inicio = () => {
     );
 };
 
-export default Inicio;
+export default Inicio;

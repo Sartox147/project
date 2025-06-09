@@ -9,7 +9,7 @@ use App\Http\Controllers\ApplianceController;
 // Rutas públicas
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::apiResource('appliances', ApplianceController::class);
+ 
 // Rutas protegidas
 
 Route::middleware('auth:sanctum')->get('/check-auth', function (Request $request) {
@@ -40,4 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas de admin // asignacion de tecnicos
     Route::post('/servicios/{servicio}/asignar-tecnico', [ServicioController::class, 'asignarTecnico']);
     Route::get('/tecnicos-disponibles', [UserController::class, 'tecnicosDisponibles']);
+
+    //  Rutas de electrodomésticos protegidas
+    Route::apiResource('appliances', ApplianceController::class);
 });

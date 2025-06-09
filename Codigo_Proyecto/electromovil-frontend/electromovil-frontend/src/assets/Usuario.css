@@ -469,22 +469,31 @@
     color: var(--primary-color);
   }
   
-  .delete-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background-color: rgba(231, 76, 60, 0.9);
-    color: var(--white);
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
+.delete-btn, .edit-btn {
+  position: absolute;
+  top: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--white);
+  border: none;
+}
+
+.delete-btn {
+  right: 1rem;
+  background-color: rgba(231, 76, 60, 0.9); /* rojo */
+}
+
+.edit-btn {
+  left: 1rem;
+  background-color: rgba(52, 152, 219, 0.9); /* azul */
+}
+
   
   .delete-btn:hover {
     background-color: var(--danger-color);

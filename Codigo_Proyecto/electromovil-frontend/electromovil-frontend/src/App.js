@@ -6,6 +6,7 @@ import Inicio from './components/Inicio';
 import LoginRegister from './components/LoginRegister';
 import QuienesSomos from './components/QuienesSomos';
 import Tecnico from './components/Tecnico';
+import Navbar from "./components/Navbar";
 
 
 
@@ -14,11 +15,11 @@ function App() {
     <Router>
       <div className="App">
         <Routes>        
-          <Route path="/Usuario" element={<Usuario/>} />
-          <Route path="/" element={<Inicio/>} />
+          <Route path="/Usuario" element={<Usuario/>}/>
+          <Route path="/" element={<Inicio/>}/>
           <Route path="/LoginRegister" element={<LoginRegister/>} />
-          <Route path="/QuienesSomos" element={<QuienesSomos/>} />
-          <Route path="/Tecnico" element={<Tecnico />} />
+          <Route path="/QuienesSomos" element={<QuienesSomos/>}/>
+          <Route path="/Tecnico" element={<Tecnico/>} />
         </Routes>
       </div>
     </Router>

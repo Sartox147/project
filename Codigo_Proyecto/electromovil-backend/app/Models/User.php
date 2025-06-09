@@ -44,4 +44,9 @@ class User extends Authenticatable
     {
         return $this->role === 'cliente';
     }
+    public function appliances()
+    {
+        return $this->hasMany(Appliance::class);
+    }
+    
 }
