@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faMapMarkerAlt, faTasks, faFileAlt, 
+import {
+  faMapMarkerAlt, faTasks, faFileAlt,
   faClock, faSpinner, faCheckCircle, faTimesCircle,
   faTools, faIndustry, faBarcode, faExclamationTriangle,
   faUser, faPhone, faEnvelope, faHome, faLock
 } from '@fortawesome/free-solid-svg-icons';
 import '../assets/Tecnico.css';
+import { api } from '../services/api';
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Tecnico = () => {
+  const navigate = useNavigate();
   // Estado para controlar la disponibilidad
   const [availability, setAvailability] = useState('disponible');
-  
+
   // Estado para controlar la visibilidad del modal de perfil
   const [showProfileModal, setShowProfileModal] = useState(false);
-  
+
   // Datos del técnico
   const [profile, setProfile] = useState({
     name: 'Juan Pérez',
@@ -69,16 +72,28 @@ const Tecnico = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userData');
+      navigate('/login-register', { replace: true });
+    }
+  };
+
   // Función para cambiar estado de servicio
   const cambiarEstadoServicio = (id, nuevoEstado) => {
-    setServicios(servicios.map(servicio => 
+    setServicios(servicios.map(servicio =>
       servicio.id === id ? { ...servicio, estado: nuevoEstado } : servicio
     ));
   };
 
   // Función para actualizar servicio
   const actualizarServicio = (id, campo, valor) => {
-    setServicios(servicios.map(servicio => 
+    setServicios(servicios.map(servicio =>
       servicio.id === id ? { ...servicio, [campo]: valor } : servicio
     ));
   };
@@ -90,7 +105,7 @@ const Tecnico = () => {
     const servicioId = formData.get('servicio');
     const tipoReporte = formData.get('tipo_reporte');
     const detalles = formData.get('detalles');
-    
+
     alert(`Reporte enviado para el servicio ${servicioId}: ${tipoReporte} - ${detalles}`);
     e.target.reset();
   };
@@ -106,11 +121,11 @@ const Tecnico = () => {
       phone: formData.get('phone'),
       address: formData.get('address')
     };
-    
+
     if (formData.get('password') && formData.get('password') === formData.get('password_confirmation')) {
       updatedProfile.password = formData.get('password');
     }
-    
+
     setProfile(updatedProfile);
     alert('Perfil actualizado correctamente');
     setShowProfileModal(false);
@@ -129,7 +144,7 @@ const Tecnico = () => {
         <h1>ElectroMovil</h1>
         <div className="header-controls">
           <div className="availability-container">
-            <button 
+            <button
               className={`availability-btn ${availability}`}
               onClick={cambiarDisponibilidad}
             >
@@ -137,14 +152,14 @@ const Tecnico = () => {
               {availability === 'ocupado' && 'Ocupado'}
               {availability === 'break' && 'En descanso'}
             </button>
-            <button 
+            <button
               className="profile-btn"
               onClick={() => setShowProfileModal(true)}
             >
               <FontAwesomeIcon icon={faUser} />
             </button>
           </div>
-          <button className="logout-btn">Salir</button>
+          <button className="logout-btn" onClick={handleLogout}>Salir</button>
         </div>
       </header>
 
@@ -156,7 +171,7 @@ const Tecnico = () => {
             <FontAwesomeIcon icon={faTasks} />
             <h2>Servicios Asignados</h2>
           </div>
-          
+
           <div className="services-list">
             {servicios.map(servicio => (
               <div key={servicio.id} className="service-card">
@@ -169,12 +184,12 @@ const Tecnico = () => {
                     {servicio.estado === 'cancelado' && 'Cancelado'}
                   </span>
                 </div>
-                
+
                 <div className="service-info">
                   <p className="service-address">
                     <FontAwesomeIcon icon={faHome} /> {servicio.direccion} - {servicio.fecha}
                   </p>
-                  
+
                   <div className="contact-info">
                     <p>
                       <FontAwesomeIcon icon={faUser} /> <strong>Contacto:</strong> {servicio.contacto}
@@ -183,14 +198,14 @@ const Tecnico = () => {
                       <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono:</strong> {servicio.telefono_contacto}
                     </p>
                   </div>
-                  
+
                   <div className="equipo-info">
                     <p><FontAwesomeIcon icon={faTools} /> <strong>Tipo:</strong> {servicio.tipo_equipo}</p>
                     <p><FontAwesomeIcon icon={faIndustry} /> <strong>Marca:</strong> {servicio.marca}</p>
                     <p><FontAwesomeIcon icon={faBarcode} /> <strong>Modelo:</strong> {servicio.modelo}</p>
                     <p><FontAwesomeIcon icon={faExclamationTriangle} /> <strong>Problema:</strong> {servicio.descripcion_problema}</p>
                   </div>
-                  
+
                   {servicio.estado === 'completado' && (
                     <div className="solution-info">
                       <p><strong>Solución:</strong> {servicio.solucion}</p>
@@ -198,7 +213,7 @@ const Tecnico = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="service-actions">
                   <div className="dropdown">
                     <button className="action-btn">Cambiar estado</button>
@@ -217,7 +232,7 @@ const Tecnico = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   {servicio.estado === 'en_proceso' && (
                     <div className="complete-form">
                       <input
@@ -281,7 +296,7 @@ const Tecnico = () => {
                   ))}
                 </select>
               </div>
-              
+
               <div className="form-group">
                 <label>Tipo de Reporte</label>
                 <select name="tipo_reporte" required>
@@ -291,17 +306,17 @@ const Tecnico = () => {
                   <option value="completado">Trabajo completado</option>
                 </select>
               </div>
-              
+
               <div className="form-group">
                 <label>Detalles</label>
                 <textarea name="detalles" rows="3" required></textarea>
               </div>
-              
+
               <div className="form-group">
                 <label>Subir foto (opcional)</label>
                 <input type="file" name="foto" accept="image/*" />
               </div>
-              
+
               <button type="submit" className="submit-btn">
                 <FontAwesomeIcon icon={faFileAlt} /> Enviar Reporte
               </button>
@@ -321,82 +336,82 @@ const Tecnico = () => {
             <form className="profile-form" onSubmit={actualizarPerfil}>
               <div className="form-group">
                 <label>Nombre completo</label>
-                <input 
-                  type="text" 
-                  name="name" 
+                <input
+                  type="text"
+                  name="name"
                   value={profile.name}
                   onChange={handleProfileChange}
-                  required 
+                  required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Correo electrónico</label>
-                <input 
-                  type="email" 
-                  name="email" 
+                <input
+                  type="email"
+                  name="email"
                   value={profile.email}
                   onChange={handleProfileChange}
-                  required 
+                  required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Teléfono</label>
-                <input 
-                  type="tel" 
-                  name="phone" 
+                <input
+                  type="tel"
+                  name="phone"
                   value={profile.phone}
                   onChange={handleProfileChange}
-                  required 
+                  required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Dirección</label>
-                <input 
-                  type="text" 
-                  name="address" 
+                <input
+                  type="text"
+                  name="address"
                   value={profile.address}
                   onChange={handleProfileChange}
-                  required 
+                  required
                 />
               </div>
-              
+
               <div className="password-section">
                 <h4>Cambiar contraseña</h4>
-                
+
                 <div className="form-group">
                   <label>Contraseña actual</label>
-                  <input 
-                    type="password" 
+                  <input
+                    type="password"
                     name="current_password"
                     value={profile.current_password}
                     onChange={handleProfileChange}
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label>Nueva contraseña</label>
-                  <input 
-                    type="password" 
+                  <input
+                    type="password"
                     name="password"
                     value={profile.password}
                     onChange={handleProfileChange}
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label>Confirmar nueva contraseña</label>
-                  <input 
-                    type="password" 
+                  <input
+                    type="password"
                     name="password_confirmation"
                     value={profile.password_confirmation}
                     onChange={handleProfileChange}
                   />
                 </div>
               </div>
-              
+
               <div className="form-actions">
                 <button type="button" className="cancel-btn" onClick={() => setShowProfileModal(false)}>
                   Cancelar
