@@ -154,8 +154,7 @@ const Tecnico = () => {
             </button>
             <button
               className="profile-btn"
-              onClick={() => setShowProfileModal(true)}
-            >
+              onClick={() => setShowProfileModal(true)}>
               <FontAwesomeIcon icon={faUser} />
             </button>
           </div>
@@ -327,7 +326,7 @@ const Tecnico = () => {
 
       {/* Modal de perfil */}
       {showProfileModal && (
-        <div className="modal-overlay">
+        <div className={`modal-overlay ${showProfileModal ? 'show' : ''}`}>
           <div className="modal-content">
             <div className="modal-header">
               <h3>Perfil del Técnico</h3>
