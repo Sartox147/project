@@ -20,10 +20,10 @@ const Tecnico = () => {
 
   // Datos del técnico
   const [profile, setProfile] = useState({
-    name: 'Juan Pérez',
-    email: 'juan.perez@electromovil.com',
-    phone: '+57 300 123 4567',
-    address: 'Calle 45 #12-34, Bogotá',
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
     current_password: '',
     password: '',
     password_confirmation: ''
@@ -74,7 +74,7 @@ const Tecnico = () => {
 
   const handleLogout = async () => {
     try {
-      await api.post('/auth/logout');
+      await api.post('/logout');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {

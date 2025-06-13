@@ -517,6 +517,7 @@ const Usuario = () => {
           </div>
         </section>
 
+        {/*Modal perfil*/}
         <div className={`modal-overlay ${showProfileModal ? 'show' : ''}`}>
           {showProfileModal && (
             <div className="modal-content">

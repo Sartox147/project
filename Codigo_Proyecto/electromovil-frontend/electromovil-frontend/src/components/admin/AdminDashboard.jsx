@@ -18,7 +18,7 @@ const AdminDashboard = () => {
     password: '',
     password_confirmation: ''
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors,] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 

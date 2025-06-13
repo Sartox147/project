@@ -116,25 +116,25 @@
   .admin-content {
     padding: 1rem;
   }
-  
+
   .sidebar {
     margin-bottom: 1.5rem;
     padding-right: 0;
   }
-  
+
   .content-container {
     padding: 1.5rem;
   }
-  
+
   .dashboard-container {
     padding: 1.5rem 0.5rem;
   }
-  
+
   .dashboard-options {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.25rem;
   }
-  
+
   .dashboard-card {
     padding: 1.5rem;
   }
@@ -144,32 +144,38 @@
   .content-container {
     padding: 1rem;
   }
-  
+
   .dashboard-options {
     grid-template-columns: 1fr;
   }
-  
+
   .dashboard-title {
     font-size: 1.6rem;
   }
-  
+
   .dashboard-subtitle {
     font-size: 1rem;
   }
-  
+
   .card-icon {
     font-size: 2rem;
   }
-  
+
   .dashboard-card h3 {
     font-size: 1.2rem;
   }
-  .logo-img {
-  width: 100px;
-  height: 40px;
-  object-fit: contain; /* Asegura que no se distorsione */
-}
 
-  
-  
+  .logo-img {
+    width: 100px;
+    height: 40px;
+    object-fit: contain;
+    /* Asegura que no se distorsione */
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--primary-color);
+  }
 }

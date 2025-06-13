@@ -12,12 +12,12 @@ nav {
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #3498db;
+    color: #2c3e50;
     text-decoration: none;
 }
 
 .login-btn {
-    background-color: #3498db;
+    background-color: #2c3e50;
     color: white;
     border-radius: 25px;
     padding: 0.5rem 1.5rem;
@@ -45,7 +45,7 @@ section {
 
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, #3498db, #2c3e50);
+    background: linear-gradient(135deg, #2c3e50, #2c3e50);
     color: white;
     padding: 10rem 0 8rem;
     text-align: center;
@@ -109,7 +109,7 @@ section {
 
 .card-title {
     font-size: 1.5rem;
-    color: #3498db;
+    color: #2c3e50;
     margin-bottom: 1.5rem;
     position: relative;
 }
@@ -122,7 +122,7 @@ section {
     transform: translateX(-50%);
     width: 50px;
     height: 3px;
-    background: #3498db;
+    background: #2c3e50;
 }
 
 .card-text {
@@ -141,7 +141,7 @@ section {
     flex-direction: column;
     transition: all 0.3s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #3498db;
+    border-left: 4px solid #2c3e50;
 }
 
 .review-card:hover {
@@ -164,7 +164,7 @@ section {
 }
 
 .customer-name {
-    color: #3498db;
+    color: #2c3e50;
     font-weight: 600;
     margin-bottom: 0.25rem;
 }
@@ -183,14 +183,14 @@ section {
 }
 
 .bg-primary {
-    background-color: #3498db !important;
+    background-color: #2c3e50 !important;
     padding: 2rem;
     border-radius: 12px;
 }
 
 .btn-light {
     background-color: white;
-    color: #3498db;
+    color: #2c3e50;
     border-radius: 30px;
     font-weight: 600;
     padding: 0.75rem 1.5rem;
@@ -198,7 +198,7 @@ section {
 
 /* Contact Section */
 .contact-section {
-    background: linear-gradient(135deg, #3498db, #2c3e50);
+    background: linear-gradient(135deg, #2c3e50, #2c3e50);
     color: white;
     text-align: center;
     padding: 6rem 0;
