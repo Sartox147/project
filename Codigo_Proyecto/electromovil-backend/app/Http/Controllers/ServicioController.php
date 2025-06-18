@@ -50,32 +50,60 @@ class ServicioController extends Controller
         return response()->json($servicios);
     }
 
-    public function store(Request $request)
+public function store(Request $request)
     {
-        $user = Auth::user();
+    $user = Auth::user();
 
-        if (!$user->isCliente()) {
-            return response()->json(['message' => 'Solo los clientes pueden crear solicitudes'], 403);
-        }
-
+    // Admin puede crear servicios para cualquier cliente
+    if ($user->isAdmin()) {
         $request->validate([
+            'cliente_id' => 'required|exists:users,id,role,cliente',
             'tipo_equipo' => 'required|in:lavadora,nevera',
             'marca' => 'required|string|max:100',
             'modelo' => 'required|string|max:100',
             'descripcion_problema' => 'required|string',
+            'tecnico_id' => 'nullable|exists:users,id,role,tecnico',
+            'costo' => 'nullable|numeric|min:0',
         ]);
 
         $servicio = Servicio::create([
-            'cliente_id' => $user->id,
+            'cliente_id' => $request->cliente_id,
             'tipo_equipo' => $request->tipo_equipo,
             'marca' => $request->marca,
             'modelo' => $request->modelo,
             'descripcion_problema' => $request->descripcion_problema,
             'fecha_solicitud' => now(),
+            'tecnico_id' => $request->tecnico_id, // si viene vacío queda null
+            'costo' => $request->costo, // si viene vacío queda null
         ]);
 
         return response()->json($servicio, 201);
     }
+
+    // Si es cliente, solo puede crear su propio servicio
+    if (!$user->isCliente()) {
+        return response()->json(['message' => 'No autorizado'], 403);
+    }
+
+    $request->validate([
+        'tipo_equipo' => 'required|in:lavadora,nevera',
+        'marca' => 'required|string|max:100',
+        'modelo' => 'required|string|max:100',
+        'descripcion_problema' => 'required|string',
+    ]);
+
+    $servicio = Servicio::create([
+        'cliente_id' => $user->id,
+        'tipo_equipo' => $request->tipo_equipo,
+        'marca' => $request->marca,
+        'modelo' => $request->modelo,
+        'descripcion_problema' => $request->descripcion_problema,
+        'fecha_solicitud' => now(),
+    ]);
+
+    return response()->json($servicio, 201);
+    }
+
 
     public function show(Servicio $servicio)
     {
@@ -170,6 +198,18 @@ class ServicioController extends Controller
             'message' => 'Técnico asignado correctamente',
             'servicio' => $servicio->load('tecnico')
         ]);
+    }
+    public function misServiciosTecnico(Request $request)
+    {
+    $tecnico = $request->user();
+
+    if ($tecnico->role !== 'tecnico') {
+        return response()->json(['error' => 'No autorizado'], 403);
+    }
+
+    $servicios = Servicio::where('tecnico_id', $tecnico->id)->get();
+
+    return response()->json($servicios);
     }
 
 }

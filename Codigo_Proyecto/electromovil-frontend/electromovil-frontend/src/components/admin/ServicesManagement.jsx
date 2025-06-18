@@ -6,6 +6,7 @@ const ServicesManagement = () => {
   const [services, setServices] = useState([]);
   const [filteredServices, setFilteredServices] = useState([]);
   const [technicians, setTechnicians] = useState([]);
+  const [cient, setcient] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentService, setCurrentService] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: '', variant: 'success' });
@@ -14,6 +15,7 @@ const ServicesManagement = () => {
   useEffect(() => {
     fetchServices();
     fetchTechnicians();
+    fetchcient();
   }, []);
 
   useEffect(() => {
@@ -30,14 +32,24 @@ const ServicesManagement = () => {
     }
   };
 
-const fetchTechnicians = async () => {
-  try {
-    const response = await api.get('/users/by-role?role=tecnico'); // Cambia 'technician' a 'tecnico'
-    setTechnicians(response.data);
-  } catch (error) {
-    showAlert('Error al cargar técnicos', 'danger');
-  }
-};
+  //consulta de tecnicos
+  const fetchTechnicians = async () => {
+    try {
+      const response = await api.get('/users/by-role?role=tecnico');
+      setTechnicians(response.data);
+    } catch (error) {
+      showAlert('Error al cargar técnicos', 'danger');
+    }
+  };
+
+  const fetchcient = async () => {
+    try {
+      const response = await api.get('/users/by-role?role=cliente');
+      setcient(response.data);
+    } catch (error) {
+      showAlert('Error al cargar clientes', 'danger');
+    }
+  };
 
   const showAlert = (message, variant) => {
     setAlert({ show: true, message, variant });
@@ -47,6 +59,7 @@ const fetchTechnicians = async () => {
   const handleEdit = (service) => {
     setCurrentService({
       ...service,
+      cientid: service.cliente_id || '',
       technicianId: service.tecnico_id || '',
       description: service.descripcion_problema,
       status: service.estado,
@@ -91,6 +104,7 @@ const fetchTechnicians = async () => {
         fecha_atendido: currentService.fecha_atendido,
         fecha_completado: currentService.fecha_completado,
         tecnico_id: currentService.technicianId || null,
+        cliente_id: currentService.cientid || null,
       };
 
       if (currentService.id) {
@@ -304,6 +318,16 @@ const fetchTechnicians = async () => {
                 <option value="">No asignado</option>
                 {technicians.map(tech => (
                   <option key={tech.id} value={tech.id}>{tech.name}</option>
+                ))}
+              </Form.Select>
+              <Form.Label>Asignar un cliente</Form.Label>
+              <Form.Select
+                value={currentService?.cientid || ''}
+                onChange={(e) => setCurrentService({ ...currentService, cientid: e.target.value })}
+              >
+                <option value="">Seleccione un cliente</option>
+                {cient.filter(client => client?.id).map(client => (
+                  <option key={client.id} value={client.id}>{client.name}</option>
                 ))}
               </Form.Select>
             </Form.Group>

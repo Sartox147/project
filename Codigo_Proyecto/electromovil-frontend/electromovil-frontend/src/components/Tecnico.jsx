@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMapMarkerAlt, faTasks, faFileAlt,
@@ -30,36 +30,23 @@ const Tecnico = () => {
   });
 
   // Datos de servicios con los nuevos campos solicitados
-  const [servicios, setServicios] = useState([
-    {
-      id: 101,
-      direccion: "Calle 123, Bogotá",
-      fecha: "20/12/2024",
-      tipo_equipo: "Nevera",
-      marca: "Samsung",
-      modelo: "RT38K5930S9",
-      descripcion_problema: "No enfría el compartimiento superior",
-      estado: "pendiente",
-      solucion: "",
-      costo: "",
-      contacto: "María Gómez",
-      telefono_contacto: "+57 310 555 1234"
-    },
-    {
-      id: 102,
-      direccion: "Avenida 456, Medellín",
-      fecha: "22/12/2024",
-      tipo_equipo: "Lavadora",
-      marca: "LG",
-      modelo: "WM3900HWA",
-      descripcion_problema: "No centrifuga y hace ruidos extraños",
-      estado: "en_proceso",
-      solucion: "Se reemplazaron los rodamientos",
-      costo: "120000",
-      contacto: "Carlos Rodríguez",
-      telefono_contacto: "+57 320 444 5678"
-    }
-  ]);
+  const [servicios, setServicios] = useState([]);
+  useEffect(() => {
+    const fetchServiciosAsignados = async () => {
+      try {
+        const userData = JSON.parse(localStorage.getItem('userData')); // obtenemos el id del técnico logueado
+        const tecnicoId = userData?.id; // este id debe ser el que corresponde en la tabla 'users'
+
+        const response = await api.get('/mis-servicios-tecnico');
+        setServicios(response.data);
+      } catch (error) {
+        console.error('Error al cargar los servicios asignados:', error);
+      }
+    };
+
+    fetchServiciosAsignados();
+  }, []);
+
 
   // Función para cambiar disponibilidad
   const cambiarDisponibilidad = () => {

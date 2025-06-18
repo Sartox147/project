@@ -37,6 +37,8 @@ const Usuario = () => {
   });
   const [servicios, setServicios] = useState([]);
   const [appliances, setAppliances] = useState([]);
+  const [editId, setEditId] = useState(null);
+  const [editData, setEditData] = useState({});
   const [newAppliance, setNewAppliance] = useState({
     type: 'nevera',
     brand: '',
@@ -293,13 +295,15 @@ const Usuario = () => {
     }
   };
 
+
+
   if (isLoading) {
-    return (
-      <div className="loading-container">
-        <div className="spinner"></div>
-        <span>Cargando...</span>
-      </div>
-    );
+  return (
+  <div className="loading-container">
+  <div className="spinner"></div>
+  <span>Cargando...</span>
+  </div>
+  );
   }
 
   return (
@@ -342,7 +346,7 @@ const Usuario = () => {
                   )}
 
                   {servicio.costo && (
-                    <p><strong>Costo:</strong> ${servicio.costo.toFixed(2)}</p>
+                     <p><strong>Costo:</strong> ${Number(servicio.costo).toLocaleString('es-CO', { maximumFractionDigits: 0 })}</p>
                   )}
                 </div>
               ))
@@ -446,7 +450,6 @@ const Usuario = () => {
               </form>
             </div>
           )}
-
           <div className="appliances-grid">
             {appliances.length > 0 ? (
               appliances.map(appliance => (
@@ -470,18 +473,85 @@ const Usuario = () => {
                       </div>
                     )}
                   </div>
+
                   <div className="appliance-info">
-                    <h3>{appliance.type.charAt(0).toUpperCase() + appliance.type.slice(1)}</h3>
-                    <p><strong>Marca:</strong> {appliance.brand}</p>
-                    <p><strong>Modelo:</strong> {appliance.model}</p>
-                    <p><strong>Comprado:</strong> {appliance.purchase_date ? new Date(appliance.purchase_date).toLocaleDateString() : 'No especificado'}</p>
+                    {editId === appliance.id ? (
+                      <>
+                        <div className="edit-form">
+                          <div className="form-group">
+                            <label>Tipo:</label>
+                            <input
+                              type="text"
+                              name="type"
+                              value={editData.type}
+                              onChange={(e) => setEditData(prev => ({ ...prev, type: e.target.value }))}
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label>Marca:</label>
+                            <input
+                              type="text"
+                              name="brand"
+                              value={editData.brand}
+                              onChange={(e) => setEditData(prev => ({ ...prev, brand: e.target.value }))}
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label>Modelo:</label>
+                            <input
+                              type="text"
+                              name="model"
+                              value={editData.model}
+                              onChange={(e) => setEditData(prev => ({ ...prev, model: e.target.value }))}
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label>Comprado:</label>
+                            <input
+                              type="date"
+                              name="purchase_date"
+                              value={editData.purchase_date}
+                              onChange={(e) => setEditData(prev => ({ ...prev, purchase_date: e.target.value }))}
+                            />
+                          </div>
+
+                          <div className="button-group">
+                            <button onClick={async () => { await updateAppliance(appliance.id, editData); setEditId(null); }} className="btn-save">
+                              Guardar
+                            </button>
+
+                            <button onClick={() => setEditId(null)} className="btn-cancel">
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      </>) : (
+                      <>
+                        <h3>{appliance.type.charAt(0).toUpperCase() + appliance.type.slice(1)}</h3>
+                        <p><strong>Marca:</strong> {appliance.brand}</p>
+                        <p><strong>Modelo:</strong> {appliance.model}</p>
+                        <p><strong>Comprado:</strong> {appliance.purchase_date ? new Date(appliance.purchase_date).toLocaleDateString() : 'No especificado'}</p>
+
+                        <button className="edit-btn" onClick={() => {
+                          setEditId(appliance.id);
+                          setEditData({
+                            type: appliance.type,
+                            brand: appliance.brand,
+                            model: appliance.model,
+                            purchase_date: appliance.purchase_date ? appliance.purchase_date.split('T')[0] : ''
+                          });
+                        }}>
+                          <FaEdit />
+                        </button>
+                        <button className="delete-btn" onClick={() => deleteAppliance(appliance.id)}>
+                          <FaTrash />
+                        </button>
+                      </>
+                    )}
                   </div>
-                  <button className="edit-btn" onClick={() => updateAppliance(appliance)}>
-                    <FaEdit />
-                  </button>
-                  <button className="delete-btn" onClick={() => deleteAppliance(appliance.id)}>
-                    <FaTrash />
-                  </button>
                 </div>
               ))
             ) : (

@@ -270,3 +270,60 @@ form {
         font-size: 30px;
     }
 }
+.registration-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  font-family: 'Poppins', sans-serif;
+  color: #d1fae5;
+  padding: 20px;
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 60px;
+  color: #34d399;
+  margin-bottom: 20px;
+  animation: pulse 1.5s infinite;
+}
+
+.success-title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #bbf7d0;
+}
+
+.success-message {
+  font-size: 1rem;
+  color: #a7f3d0;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+.input-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 2px;
+  display: block;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.error-field {
+  border-color: red !important;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}

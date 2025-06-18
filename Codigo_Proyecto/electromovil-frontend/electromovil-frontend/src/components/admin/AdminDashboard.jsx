@@ -61,7 +61,7 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-      await api.post('/auth/logout');
+      await api.post('/logout');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
       navigate('/login-register', { replace: true });
     }
   };
-
+  
   const handleInputChange = e => {
     const { name, value } = e.target;
     setUserData(prev => ({ ...prev, [name]: value }));
