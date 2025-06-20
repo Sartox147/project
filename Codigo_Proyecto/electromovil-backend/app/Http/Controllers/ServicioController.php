@@ -207,7 +207,9 @@ public function store(Request $request)
         return response()->json(['error' => 'No autorizado'], 403);
     }
 
-    $servicios = Servicio::where('tecnico_id', $tecnico->id)->get();
+    $servicios = Servicio::with('cliente') 
+    ->where('tecnico_id', $tecnico->id)
+    ->get();
 
     return response()->json($servicios);
     }

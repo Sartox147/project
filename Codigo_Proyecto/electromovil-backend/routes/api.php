@@ -9,6 +9,7 @@ use App\Http\Controllers\ApplianceController;
 // Rutas públicas
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+
  
 // Rutas protegidas
 
@@ -29,8 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/by-role', [UserController::class, 'indexByRole']);
      
     // ruta tecnico
-    Route::get('/mis', [ServicioController::class, 'misServiciosTecnico']);
     
+    Route::get('/mis', [ServicioController::class, 'misServiciosTecnico']);
     // Rutas de servicios
     Route::apiResource('servicios', ServicioController::class);
         

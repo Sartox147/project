@@ -17,6 +17,8 @@ const Tecnico = () => {
 
   // Estado para controlar la visibilidad del modal de perfil
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [mostrarCompletados, setMostrarCompletados] = useState(false);
+  const [mostrarCancelados, setMostrarCancelados] = useState(false);
 
   // Datos del técnico
   const [profile, setProfile] = useState({
@@ -29,15 +31,41 @@ const Tecnico = () => {
     password_confirmation: ''
   });
 
-  // Datos de servicios con los nuevos campos solicitados
+  // Estado para almacenar los datos de los clientes por id
+  const [clientes, setClientes] = useState({});
   const [servicios, setServicios] = useState([]);
+  // Cuando se cargan los servicios, buscar los datos de los clientes
+  useEffect(() => {
+    const fetchClientes = async () => {
+      // Obtener los cliente_id únicos de los servicios
+      const clienteIds = [...new Set(servicios.map(s => s.cliente_id))].filter(Boolean);
+      if (clienteIds.length === 0) return;
+
+      try {
+        // Puedes optimizar esto según tu API, aquí se hace una petición por cada cliente
+        const clientesData = {};
+        await Promise.all(clienteIds.map(async (id) => {
+          const res = await api.get(`/users/${id}`);
+          clientesData[id] = res.data;
+        }));
+        setClientes(clientesData);
+      } catch (error) {
+        console.error('Error al cargar los datos de los clientes:', error);
+      }
+    };
+
+    fetchClientes();
+  }, [servicios]);
+
+  // Datos de servicios con los nuevos campos solicitados
+
   useEffect(() => {
     const fetchServiciosAsignados = async () => {
       try {
         const userData = JSON.parse(localStorage.getItem('userData')); // obtenemos el id del técnico logueado
         const tecnicoId = userData?.id; // este id debe ser el que corresponde en la tabla 'users'
 
-        const response = await api.get('/mis-servicios-tecnico');
+        const response = await api.get('/mis');
         setServicios(response.data);
       } catch (error) {
         console.error('Error al cargar los servicios asignados:', error);
@@ -72,10 +100,17 @@ const Tecnico = () => {
   };
 
   // Función para cambiar estado de servicio
-  const cambiarEstadoServicio = (id, nuevoEstado) => {
-    setServicios(servicios.map(servicio =>
-      servicio.id === id ? { ...servicio, estado: nuevoEstado } : servicio
-    ));
+  const cambiarEstadoServicio = async (id, nuevoEstado) => {
+    try {
+      await api.put(`/servicios/${id}`, { estado: nuevoEstado });
+      // Actualiza el estado local solo si la petición fue exitosa
+      setServicios(servicios.map(servicio =>
+        servicio.id === id ? { ...servicio, estado: nuevoEstado } : servicio
+      ));
+    } catch (error) {
+      console.error('Error al cambiar el estado del servicio:', error);
+      alert('No se pudo actualizar el estado del servicio');
+    }
   };
 
   // Función para actualizar servicio
@@ -85,16 +120,32 @@ const Tecnico = () => {
     ));
   };
 
+  const [costoValor, setCostoValor] = useState('');
   // Función para enviar reporte
-  const enviarReporte = (e) => {
+  const enviarReporte = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const servicioId = formData.get('servicio');
     const tipoReporte = formData.get('tipo_reporte');
     const detalles = formData.get('detalles');
+    const costo = formData.get('costo');
 
-    alert(`Reporte enviado para el servicio ${servicioId}: ${tipoReporte} - ${detalles}`);
-    e.target.reset();
+
+    try {
+      await api.put(`/servicios/${servicioId}`, {
+        diagnostico: tipoReporte,
+        solucion: detalles,
+        costo: costoValor,
+        estado: 'en_proceso' // Cambia el estado a en proceso al enviar un reporte
+      });
+
+      alert('Reporte enviado correctamente');
+      e.target.reset();
+      setCostoValor('');
+    } catch (error) {
+      console.error('Error al enviar el reporte:', error);
+      alert('Hubo un problema al enviar el reporte');
+    }
   };
 
   // Función para actualizar perfil
@@ -151,95 +202,171 @@ const Tecnico = () => {
 
       {/* Contenido principal */}
       <main className="main-content-grid">
-        {/* Sección izquierda - Servicios asignados */}
-        <section className="services-section">
-          <div className="section-header">
-            <FontAwesomeIcon icon={faTasks} />
-            <h2>Servicios Asignados</h2>
+        {/* Columna izquierda */}
+        <div>
+          {/* Sección izquierda - Servicios asignados */}
+          <section className="services-section">
+            <div className="section-header">
+              <FontAwesomeIcon icon={faTasks} />
+              <h2>Servicios Asignados</h2>
+            </div>
+
+            <div className="services-list">
+              {servicios
+                .filter(servicio => servicio.estado !== 'completado' && servicio.estado !== 'cancelado')
+                .map(servicio => (
+                  <div key={servicio.id} className="service-card">
+                    <div className="service-header">
+                      <h3>Servicio #{servicio.id}</h3>
+                      <span className={`status-badge ${servicio.estado}`}>
+                        {servicio.estado === 'pendiente' && 'Pendiente'}
+                        {servicio.estado === 'en_proceso' && 'En proceso'}
+                        {servicio.estado === 'completado' && 'Completado'}
+                        {servicio.estado === 'cancelado' && 'Cancelado'}
+                      </span>
+                    </div>
+
+                    <div className="service-info">
+                      <p className="service-address">
+                        <FontAwesomeIcon icon={faHome} /> {servicio.cliente.address} - {servicio.cliente.fecha_solicitud}
+                      </p>
+
+                      <div className="contact-info">
+                        <p><FontAwesomeIcon icon={faUser} /> <strong>Cliente:</strong> {servicio.cliente.name}</p>
+                        <p><FontAwesomeIcon icon={faPhone} /> <strong>Teléfono:</strong> {servicio.cliente.phone}</p>
+                      </div>
+
+                      <div className="equipo-info">
+                        <p><FontAwesomeIcon icon={faTools} /> <strong>Tipo:</strong> {servicio.tipo_equipo}</p>
+                        <p><FontAwesomeIcon icon={faIndustry} /> <strong>Marca:</strong> {servicio.marca}</p>
+                        <p><FontAwesomeIcon icon={faBarcode} /> <strong>Modelo:</strong> {servicio.modelo}</p>
+                        <p><FontAwesomeIcon icon={faExclamationTriangle} /> <strong>Problema:</strong> {servicio.descripcion_problema}</p>
+                      </div>
+                    </div>
+
+                    <div className="service-actions">
+                      <div className="dropdown">
+                        <button className="action-btn">Cambiar estado</button>
+                        <div className="dropdown-content">
+                          <button onClick={() => cambiarEstadoServicio(servicio.id, 'pendiente')}>
+                            <FontAwesomeIcon icon={faClock} /> Pendiente
+                          </button>
+                          <button onClick={() => cambiarEstadoServicio(servicio.id, 'en_proceso')}>
+                            <FontAwesomeIcon icon={faSpinner} /> En proceso
+                          </button>
+                          <button onClick={() => cambiarEstadoServicio(servicio.id, 'completado')}>
+                            <FontAwesomeIcon icon={faCheckCircle} /> Completado
+                          </button>
+                          <button onClick={() => cambiarEstadoServicio(servicio.id, 'cancelado')}>
+                            <FontAwesomeIcon icon={faTimesCircle} /> Cancelado
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </section>
+
+          {/* Sección nueva: Servicios Completados */}
+          <section className="completed-section">
+            <div className="section-header" style={{ cursor: 'pointer' }} onClick={() => setMostrarCompletados(prev => !prev)}>
+              <FontAwesomeIcon icon={faCheckCircle} />
+              <h2>Servicios Completados</h2>
+              <span style={{ marginLeft: 'auto', fontSize: '1.2rem' }}>
+                {mostrarCompletados ? '▲' : '▼'}
+              </span>
+            </div>
+
+            {mostrarCompletados && (
+              servicios.filter(s => s.estado === 'completado').length === 0 ? (
+                <p className="no-completed">No hay servicios completados todavía.</p>
+              ) : (
+                <div className="services-list">
+                  {servicios
+                    .filter(servicio => servicio.estado === 'completado')
+                    .map(servicio => (
+                      <div key={servicio.id} className="service-card completado-service">
+                        <div className="service-header">
+                          <h3>Servicio #{servicio.id}</h3>
+                          <span className="status-badge completado">Completado</span>
+                        </div>
+
+                        <div className="service-info">
+                          <p className="service-address">
+                            <FontAwesomeIcon icon={faHome} /> {servicio.cliente.address} - {servicio.cliente.fecha_solicitud}
+                          </p>
+
+                          <div className="contact-info">
+                            <p><FontAwesomeIcon icon={faUser} /> <strong>Cliente:</strong> {servicio.cliente.name}</p>
+                            <p><FontAwesomeIcon icon={faPhone} /> <strong>Teléfono:</strong> {servicio.cliente.phone}</p>
+                          </div>
+
+                          <div className="equipo-info">
+                            <p><FontAwesomeIcon icon={faTools} /> <strong>Tipo:</strong> {servicio.tipo_equipo}</p>
+                            <p><FontAwesomeIcon icon={faIndustry} /> <strong>Marca:</strong> {servicio.marca}</p>
+                            <p><FontAwesomeIcon icon={faBarcode} /> <strong>Modelo:</strong> {servicio.modelo}</p>
+                            <p><FontAwesomeIcon icon={faExclamationTriangle} /> <strong>Problema:</strong> {servicio.descripcion_problema}</p>
+                            <p><FontAwesomeIcon icon={faFileAlt} /> <strong>Solución:</strong> {servicio.solucion || 'N/A'}</p>
+                            <p><FontAwesomeIcon icon={faFileAlt} /> <strong>Costo:</strong> ${parseInt(servicio.costo || 0).toLocaleString('es-CO')}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )
+            )}
+          </section>
+          {/* Sección nueva: Servicios Cancelados */}
+          <section className="completed-section">
+            <div className="section-header" style={{ cursor: 'pointer' }} onClick={() => setMostrarCancelados(prev => !prev)}>
+              <FontAwesomeIcon icon={faTimesCircle} />
+              <h2>Servicios Cancelados</h2>
+              <span style={{ marginLeft: 'auto', fontSize: '1.2rem' }}>
+                {mostrarCancelados ? '▲' : '▼'}
+              </span>
+            </div>
+
+            {mostrarCancelados && (
+              servicios.filter(s => s.estado === 'cancelado').length === 0 ? (
+                <p className="no-completed">No hay servicios cancelados.</p>
+              ) : (
+                <div className="services-list">
+                  {servicios
+                    .filter(servicio => servicio.estado === 'cancelado')
+                    .map(servicio => (
+                      <div key={servicio.id} className="service-card cancelado-service">
+                        <div className="service-header">
+                          <h3>Servicio #{servicio.id}</h3>
+                          <span className="status-badge cancelado">Cancelado</span>
+                        </div>
+
+                        <div className="service-info">
+                          <p className="service-address">
+                            <FontAwesomeIcon icon={faHome} /> {servicio.cliente.address} - {servicio.cliente.fecha_solicitud}
+                          </p>
+
+                          <div className="contact-info">
+                            <p><FontAwesomeIcon icon={faUser} /> <strong>Cliente:</strong> {servicio.cliente.name}</p>
+                            <p><FontAwesomeIcon icon={faPhone} /> <strong>Teléfono:</strong> {servicio.cliente.phone}</p>
+                          </div>
+
+                          <div className="equipo-info">
+                            <p><FontAwesomeIcon icon={faTools} /> <strong>Tipo:</strong> {servicio.tipo_equipo}</p>
+                            <p><FontAwesomeIcon icon={faIndustry} /> <strong>Marca:</strong> {servicio.marca}</p>
+                            <p><FontAwesomeIcon icon={faBarcode} /> <strong>Modelo:</strong> {servicio.modelo}</p>
+                            <p><FontAwesomeIcon icon={faExclamationTriangle} /> <strong>Problema:</strong> {servicio.descripcion_problema}</p>
+                            <p><FontAwesomeIcon icon={faFileAlt} /> <strong>Motivo de cancelación:</strong> {servicio.solucion || 'N/A'}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )
+            )}
+          </section>        
           </div>
-
-          <div className="services-list">
-            {servicios.map(servicio => (
-              <div key={servicio.id} className="service-card">
-                <div className="service-header">
-                  <h3>Servicio #{servicio.id}</h3>
-                  <span className={`status-badge ${servicio.estado}`}>
-                    {servicio.estado === 'pendiente' && 'Pendiente'}
-                    {servicio.estado === 'en_proceso' && 'En proceso'}
-                    {servicio.estado === 'completado' && 'Completado'}
-                    {servicio.estado === 'cancelado' && 'Cancelado'}
-                  </span>
-                </div>
-
-                <div className="service-info">
-                  <p className="service-address">
-                    <FontAwesomeIcon icon={faHome} /> {servicio.direccion} - {servicio.fecha}
-                  </p>
-
-                  <div className="contact-info">
-                    <p>
-                      <FontAwesomeIcon icon={faUser} /> <strong>Contacto:</strong> {servicio.contacto}
-                    </p>
-                    <p>
-                      <FontAwesomeIcon icon={faPhone} /> <strong>Teléfono:</strong> {servicio.telefono_contacto}
-                    </p>
-                  </div>
-
-                  <div className="equipo-info">
-                    <p><FontAwesomeIcon icon={faTools} /> <strong>Tipo:</strong> {servicio.tipo_equipo}</p>
-                    <p><FontAwesomeIcon icon={faIndustry} /> <strong>Marca:</strong> {servicio.marca}</p>
-                    <p><FontAwesomeIcon icon={faBarcode} /> <strong>Modelo:</strong> {servicio.modelo}</p>
-                    <p><FontAwesomeIcon icon={faExclamationTriangle} /> <strong>Problema:</strong> {servicio.descripcion_problema}</p>
-                  </div>
-
-                  {servicio.estado === 'completado' && (
-                    <div className="solution-info">
-                      <p><strong>Solución:</strong> {servicio.solucion}</p>
-                      <p><strong>Costo:</strong> ${servicio.costo}</p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="service-actions">
-                  <div className="dropdown">
-                    <button className="action-btn">Cambiar estado</button>
-                    <div className="dropdown-content">
-                      <button onClick={() => cambiarEstadoServicio(servicio.id, 'pendiente')}>
-                        <FontAwesomeIcon icon={faClock} /> Pendiente
-                      </button>
-                      <button onClick={() => cambiarEstadoServicio(servicio.id, 'en_proceso')}>
-                        <FontAwesomeIcon icon={faSpinner} /> En proceso
-                      </button>
-                      <button onClick={() => cambiarEstadoServicio(servicio.id, 'completado')}>
-                        <FontAwesomeIcon icon={faCheckCircle} /> Completado
-                      </button>
-                      <button onClick={() => cambiarEstadoServicio(servicio.id, 'cancelado')}>
-                        <FontAwesomeIcon icon={faTimesCircle} /> Cancelado
-                      </button>
-                    </div>
-                  </div>
-
-                  {servicio.estado === 'en_proceso' && (
-                    <div className="complete-form">
-                      <input
-                        type="text"
-                        placeholder="Solución aplicada"
-                        value={servicio.solucion}
-                        onChange={(e) => actualizarServicio(servicio.id, 'solucion', e.target.value)}
-                      />
-                      <input
-                        type="number"
-                        placeholder="Costo"
-                        value={servicio.costo}
-                        onChange={(e) => actualizarServicio(servicio.id, 'costo', e.target.value)}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
 
         {/* Sección derecha - Mapa y reportes */}
         <div className="right-side-column">
@@ -286,9 +413,9 @@ const Tecnico = () => {
               <div className="form-group">
                 <label>Tipo de Reporte</label>
                 <select name="tipo_reporte" required>
-                  <option value="avance">Avance de trabajo</option>
-                  <option value="repuestos">Necesidad de repuestos</option>
-                  <option value="problema">Problema encontrado</option>
+                  <option value="Avance de trabajo">Avance de trabajo</option>
+                  <option value="Necesidad de repuestos">Necesidad de repuestos</option>
+                  <option value="problema encontrado">Problema encontrado</option>
                   <option value="completado">Trabajo completado</option>
                 </select>
               </div>
@@ -296,6 +423,21 @@ const Tecnico = () => {
               <div className="form-group">
                 <label>Detalles</label>
                 <textarea name="detalles" rows="3" required></textarea>
+              </div>
+              <div className="form-group">
+                <label>Costo</label>
+                <input
+                  type="text"
+                  name="costo_mostrar"
+                  required
+                  inputMode="numeric"
+                  placeholder="$0"
+                  value={costoValor ? `$${parseInt(costoValor, 10).toLocaleString('es-CO')}` : ''}
+                  onChange={e => {
+                    const raw = e.target.value.replace(/[^\d]/g, '');
+                    setCostoValor(raw);
+                  }}
+                />
               </div>
 
               <div className="form-group">

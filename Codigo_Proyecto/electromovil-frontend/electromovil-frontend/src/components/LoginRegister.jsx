@@ -186,6 +186,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
                 required
                 value={loginData.email}
                 onChange={handleLoginChange}
+                autoComplete='off'
               />
               <i className='bx bxs-envelope'></i>
             </div>
@@ -203,6 +204,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
             <button type="submit" className="btn" disabled={isLoading}>
               {isLoading ? 'Procesando...' : 'Iniciar sesión'}
             </button>
+            <a href="#">¿Olvidaste tu contraseña?</a>
           </form>
         </div>
 
@@ -219,6 +221,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
                 value={registerData.name}
                 onChange={handleRegisterChange}
                 className={errors.name ? 'error-field' : ''}
+                autoComplete='off'
               />
               <i className='bx bxs-user'></i>
               {errors.name && <span className="input-error">{errors.name}</span>}
@@ -232,6 +235,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
                 value={registerData.email}
                 onChange={handleRegisterChange}
                 className={errors.email ? 'error-field' : ''}
+                autoComplete='off'
               />
               <i className='bx bxs-envelope'></i>
               {errors.email && <span className="input-error">{errors.email}</span>}
@@ -245,6 +249,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
                 value={registerData.password}
                 onChange={handleRegisterChange}
                 className={errors.password ? 'error-field' : ''}
+                autoComplete='off'
               />
               <i className='bx bxs-lock-alt'></i>
               {errors.password && <span className="input-error">{errors.password}</span>}
@@ -258,6 +263,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
                 value={registerData.password_confirmation}
                 onChange={handleRegisterChange}
                 className={errors.password_confirmation ? 'error-field' : ''}
+                autoComplete='off'
               />
               <i className='bx bxs-lock-alt'></i>
               {errors.password_confirmation && <span className="input-error">{errors.password_confirmation}</span>}
