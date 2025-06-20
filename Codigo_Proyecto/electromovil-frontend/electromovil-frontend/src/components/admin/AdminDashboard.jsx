@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
+import { faMapMarkerAlt, faTasks, faFileAlt, faUser, faPhone, faEnvelope, faHome, faLock } from '@fortawesome/free-solid-svg-icons';
 import '../../assets/admin.css';
 import { api } from '../../services/api';
-import { FaUser  } from 'react-icons/fa';
+import { FaUser } from 'react-icons/fa';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [userData, setUserData] = useState({
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState({
     name: '',
     email: '',
     phone: '',
@@ -24,9 +28,30 @@ const AdminDashboard = () => {
 
   // Cargar datos guardados en localStorage si existen
   useEffect(() => {
-    const storedUser  = JSON.parse(localStorage.getItem('userData'));
-    if (storedUser ) setUserData(prev => ({ ...prev, ...storedUser  }));
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get('/me');
+        setProfile(prev => ({
+          ...prev,
+          id: res.data.id, // Guarda el id aquí
+          name: res.data.name || '',
+          email: res.data.email || '',
+          phone: res.data.phone || '',
+          address: res.data.address || ''
+        }));
+      } catch (error) {
+        console.error('Error al cargar el perfil:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
   }, []);
+
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setProfile(prev => ({ ...prev, [name]: value }));
+  };
 
   const checkAuthError = (error) => {
     if (error.response && (error.response.status === 401 || error.response.status === 419)) {
@@ -35,29 +60,65 @@ const AdminDashboard = () => {
     }
     return false;
   };
-    const fetchUserData = async () => {
+
+  useEffect(() => {
+    const fetchProfile = async () => {
       try {
-        const response = await api.get('/user');
-        if (!response.data) throw new Error('Datos de usuario no recibidos');
-  
-        setUserData({
-          name: response.data.name || '',
-          email: response.data.email || '',
-          phone: response.data.phone || '',
-          address: response.data.address || '',
-          current_password: '',
-          password: '',
-          password_confirmation: ''
-        });
+        const res = await api.get('/me');
+        setProfile(prev => ({
+          ...prev,
+          id: res.data.id, // Guarda el id aquí
+          name: res.data.name || '',
+          email: res.data.email || '',
+          phone: res.data.phone || '',
+          address: res.data.address || ''
+        }));
       } catch (error) {
-        console.error('Error al cargar datos del usuario:', error);
-        if (!checkAuthError(error)) {
-          handleLogout();
-        }
+        console.error('Error al cargar el perfil:', error);
       }
     };
-   
-
+    fetchProfile();
+  }, []);
+  const actualizarPerfil = async (e) => {
+    e.preventDefault();
+    if (!profile.id) {
+      alert('No se encontró información del usuario. Por favor, vuelve a iniciar sesión.');
+      return;
+    }
+    // Construye el objeto solo con los campos necesarios
+    const data = {
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone,
+      address: profile.address
+    };
+    // Solo agrega los campos de contraseña si el usuario los llenó
+    if (profile.password) {
+      data.password = profile.password;
+      data.password_confirmation = profile.password_confirmation;
+      data.current_password = profile.current_password;
+    }
+    try {
+      await api.put(`/users/${profile.id}`, data);
+      alert('Perfil actualizado correctamente');
+      setShowProfileModal(false);
+      setProfile(prev => ({
+        ...prev,
+        current_password: '',
+        password: '',
+        password_confirmation: ''
+      }));
+    } catch (error) {
+      // Muestra los errores del backend si existen
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errores = error.response.data.errors;
+        alert(Object.values(errores).flat().join('\n'));
+      } else {
+        alert('Error al actualizar el perfil');
+      }
+      console.error(error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -70,39 +131,7 @@ const AdminDashboard = () => {
       navigate('/login-register', { replace: true });
     }
   };
-  
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setUserData(prev => ({ ...prev, [name]: value }));
-  };
-
-  // Enviar datos actualizados de perfil
-  const handleSubmit = async e => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrors({});
-    setSuccessMessage('');
-
-    try {
-      const response = await api.put(`/users/${userData.id}`, userData);
-      setSuccessMessage('Perfil actualizado con éxito.');
-      setUserData(prev => ({
-        ...prev,
-        current_password: '',
-        password: '',
-        password_confirmation: ''
-      }));
-      localStorage.setItem('userData', JSON.stringify(response.data.user));
-    } catch (error) {
-      if (error.response && error.response.data.errors) {
-        setErrors(error.response.data.errors);
-      } else {
-        setErrors({ general: 'Ocurrió un error al actualizar el perfil.' });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+ 
   const handleElectroMovilClick = () => {
     navigate('/admin');
   };
@@ -134,16 +163,24 @@ const AdminDashboard = () => {
       description: 'Genera reportes y estadísticas del sistema.'
     }
   ];
-
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <span>Cargando...</span>
+      </div>
+    );
+  }
   return (
     <div className="usuario-container">
       <header className="compact-header">
         <h1 onClick={handleElectroMovilClick} style={{ cursor: 'pointer' }}>ElectroMovil</h1>
         <div className="header-controls">
           <div className="controls-spacer"></div>
-          <button className="profile-btn" onClick={() => setShowProfileModal(true)}>
-            <FaUser  className="icon" />
-            <span>Perfil</span>
+          <button
+            className="profile-btn"
+            onClick={() => setShowProfileModal(true)}>
+            <FontAwesomeIcon icon={faUser} />
           </button>
           <button className="logout-btn" onClick={handleLogout}>Salir</button>
         </div>
@@ -179,91 +216,106 @@ const AdminDashboard = () => {
 
       {/* MODAL PERFIL */}
 
+
+      {/* Modal de perfil */}
+      {showProfileModal && (
         <div className={`modal-overlay ${showProfileModal ? 'show' : ''}`}>
-          {showProfileModal && (
-            <div className="modal-content">
-              <div className="modal-header">
-                <h3>Perfil de {userData.name || 'Usuario'}</h3>
-                <button onClick={() => setShowProfileModal(false)}>×</button>
-              </div>
-              <form className="profile-form" onSubmit={handleSubmit}>
-                {successMessage && (
-                  <div className="alert alert-success">
-                    {successMessage}
-                    <button onClick={() => setSuccessMessage('')}>×</button>
-                  </div>
-                )}
-                {errors.general && (
-                  <div className="alert alert-danger">
-                    {errors.general}
-                    <button onClick={() => setErrors(prev => ({ ...prev, general: '' }))}>×</button>
-                  </div>
-                )}
-
-                {['name', 'email', 'phone', 'address'].map(field => (
-                  <div key={field} className="form-group">
-                    <label>{{
-                      name: 'Nombre completo',
-                      email: 'Correo electrónico',
-                      phone: 'Teléfono',
-                      address: 'Dirección'
-                    }[field]}</label>
-                    <input
-                      type={{
-                        name: 'text',
-                        email: 'email',
-                        phone: 'tel',
-                        address: 'text'
-                      }[field]}
-                      name={field}
-                      value={userData[field]}
-                      onChange={handleInputChange}
-                      className={errors[field] ? 'is-invalid' : ''}
-                    />
-                    {errors[field] && <div className="invalid-feedback">{errors[field][0]}</div>}
-                  </div>
-                ))}
-
-                <div className="password-section">
-                  <h4>Cambiar contraseña</h4>
-                  <p className="text-muted">Deja estos campos vacíos si no deseas cambiar la contraseña</p>
-
-                  {['current_password', 'password', 'password_confirmation'].map(field => (
-                    <div key={field} className="form-group">
-                      <label>{{
-                        current_password: 'Contraseña actual',
-                        password: 'Nueva contraseña',
-                        password_confirmation: 'Confirmar nueva contraseña'
-                      }[field]}</label>
-                      <input
-                        type="password"
-                        name={field}
-                        value={userData[field]}
-                        onChange={handleInputChange}
-                        placeholder={{
-                          current_password: 'Ingresa tu contraseña actual',
-                          password: 'Mínimo 8 caracteres',
-                          password_confirmation: 'Repite tu nueva contraseña'
-                        }[field]}
-                        className={errors[field] ? 'is-invalid' : ''}
-                      />
-                      {errors[field] && <div className="invalid-feedback">{errors[field][0]}</div>}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="form-actions">
-                  <button type="button" className="cancel-btn" onClick={() => setShowProfileModal(false)} disabled={isLoading}>
-                    Cancelar
-                  </button>
-                  <button type="submit" className="save-btn" disabled={isLoading}>
-                    {isLoading ? 'Guardando...' : 'Guardar cambios'}
-                  </button>
-                </div>
-              </form>
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Perfil del Administrador</h3>
+              <button onClick={() => setShowProfileModal(false)}>×</button>
             </div>
-          )}
+            <form className="profile-form" onSubmit={actualizarPerfil}>
+              <div className="form-group">
+                <label>Nombre completo</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={profile.name}
+                  onChange={handleProfileChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Correo electrónico</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={profile.email}
+                  onChange={handleProfileChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Teléfono</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={profile.phone}
+                  onChange={handleProfileChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Dirección</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={profile.address}
+                  onChange={handleProfileChange}
+                  required
+                />
+              </div>
+
+              <div className="password-section">
+                <h4>Cambiar contraseña</h4>
+
+                <div className="form-group">
+                  <label>Contraseña actual</label>
+                  <input
+                    type="password"
+                    name="current_password"
+                    value={profile.current_password}
+                    onChange={handleProfileChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Nueva contraseña</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={profile.password}
+                    onChange={handleProfileChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Confirmar nueva contraseña</label>
+                  <input
+                    type="password"
+                    name="password_confirmation"
+                    value={profile.password_confirmation}
+                    onChange={handleProfileChange}
+                  />
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="cancel-btn" onClick={() => setShowProfileModal(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="save-btn">
+                  Guardar cambios
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+      )}
 
       <footer className="app-footer">
         <div className="footer-content">

@@ -577,3 +577,77 @@ body {
   background-color: #fff0f0;
   border-left: 5px solid #e74c3c;
 }
+.completed-section .services-list {
+  transition: all 0.3s ease-in-out;
+}
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #ccc;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.availability-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.availability-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  z-index: 10;
+  min-width: 120px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.availability-menu div {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.availability-menu div:hover {
+  background: #f0f0f0;
+}
+.availability-menu .disponible {
+  background-color: var(--success-color);
+  color: white;
+}
+.availability-menu .ocupado {
+  background-color: var(--danger-color);
+  font-size: 0.92em;
+  color: white;
+}
+.availability-menu .break {
+  background-color: var(--break-color);
+  color: white;
+}
+.availability-menu div {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.availability-menu div:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+.availability-menu div:hover {
+  filter: brightness(0.95);
+}

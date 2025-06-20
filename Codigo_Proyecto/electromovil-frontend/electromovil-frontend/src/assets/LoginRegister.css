@@ -115,12 +115,35 @@ form {
     height: 48px;
     background: #2c3e50;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    box-shadow: 0 0 10px rgba(242, 8, 8, 0.1);
     border: none;
     cursor: pointer;
     font-size: 16px;
     color: #fff;
     font-weight: 600;
+    transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+
+.btn:hover {
+    background: #1a242f; /* Un poco más oscuro */
+    color: #fff;         /* Mantén el texto blanco */
+    transform: scale(1.05);
+}
+
+.social-icons a,
+.social-icons a:visited,
+.social-icons a:active,
+.social-icons a:hover {
+    text-decoration: none !important;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.social-icons a:hover {
+    background-color: #fff;
+    color: #3498db;
+    box-shadow: 0 2px 8px rgba(52,152,219,0.15);
 }
 
 .social-icons {
@@ -136,6 +159,7 @@ form {
     font-size: 24px;
     color: white;
     margin: 0 8px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 
@@ -270,60 +294,166 @@ form {
         font-size: 30px;
     }
 }
+
 .registration-success {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  font-family: 'Poppins', sans-serif;
-  color: #d1fae5;
-  padding: 20px;
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    font-family: 'Poppins', sans-serif;
+    color: #d1fae5;
+    padding: 20px;
+    text-align: center;
 }
 
 .success-icon {
-  font-size: 60px;
-  color: #34d399;
-  margin-bottom: 20px;
-  animation: pulse 1.5s infinite;
+    font-size: 60px;
+    color: #34d399;
+    margin-bottom: 20px;
+    animation: pulse 1.5s infinite;
 }
 
 .success-title {
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: #bbf7d0;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #bbf7d0;
 }
 
 .success-message {
-  font-size: 1rem;
-  color: #a7f3d0;
+    font-size: 1rem;
+    color: #a7f3d0;
 }
 
 @keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.8;
-  }
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
 }
+
 .input-error {
-  color: red;
-  font-size: 0.85rem;
-  margin-top: 2px;
-  display: block;
-  transition: opacity 0.5s ease-in-out;
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 2px;
+    display: block;
+    transition: opacity 0.5s ease-in-out;
 }
 
 .error-field {
-  border-color: red !important;
+    border-color: red !important;
 }
 
 .fade-out {
-  opacity: 0;
-  transition: opacity 1s ease-out;
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+.forgot-link {
+    margin: 30px 0 15px;
+    text-align: right;
+    text-decoration: none;
+}
+
+.forgot-link a,
+.forgot-link a:visited,
+.forgot-link a:active,
+.forgot-link a:hover {
+    text-decoration: none !important;
+    transition: transform 0.15s;
+    display: inline-block;
+}
+
+.forgot-link a:hover {
+    transform: scale(1.08);
+}
+.forgot-modal-overlay {
+  position: fixed;
+  z-index: 2000;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(44, 62, 80, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.forgot-modal {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+  padding: 36px 28px 28px 28px;
+  max-width: 350px;
+  width: 90%;
+  position: relative;
+  text-align: center;
+  animation: fadeInModal 0.4s;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; transform: translateY(-30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.forgot-modal h2 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.forgot-modal p {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 18px;
+}
+
+.forgot-modal input[type="email"] {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #c9d6ff;
+  font-size: 1rem;
+  margin-bottom: 10px;
+  outline: none;
+  background: #f5f6fa;
+  color: #2c3e50;
+}
+
+.forgot-modal .btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-btn:hover {
+  color: #dc3545;
+}
+
+.success-message {
+  color: #28a745;
+  margin-top: 12px;
+  font-size: 1rem;
+}
+
+.error-message {
+  color: #dc3545;
+  margin-top: 12px;
+  font-size: 1rem;
 }

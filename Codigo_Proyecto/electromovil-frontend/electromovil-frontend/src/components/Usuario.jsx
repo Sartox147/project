@@ -295,15 +295,13 @@ const Usuario = () => {
     }
   };
 
-
-
   if (isLoading) {
-  return (
-  <div className="loading-container">
-  <div className="spinner"></div>
-  <span>Cargando...</span>
-  </div>
-  );
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <span>Cargando...</span>
+      </div>
+    );
   }
 
   return (
@@ -346,7 +344,7 @@ const Usuario = () => {
                   )}
 
                   {servicio.costo && (
-                     <p><strong>Costo:</strong> ${Number(servicio.costo).toLocaleString('es-CO', { maximumFractionDigits: 0 })}</p>
+                    <p><strong>Costo:</strong> ${Number(servicio.costo).toLocaleString('es-CO', { maximumFractionDigits: 0 })}</p>
                   )}
                 </div>
               ))

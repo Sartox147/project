@@ -4,6 +4,7 @@ import '../assets/LoginRegister.css';
 import 'boxicons/css/boxicons.min.css';
 import api from '../services/api';
 
+
 const LoginRegister = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
 
@@ -14,7 +15,10 @@ const LoginRegister = ({ onLoginSuccess }) => {
     password: '',
     password_confirmation: ''
   });
-
+  const [showForgotForm, setShowForgotForm] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState('');
+  const [forgotError, setForgotError] = useState('');
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
@@ -32,12 +36,12 @@ const LoginRegister = ({ onLoginSuccess }) => {
     loginBtn?.addEventListener('click', () => container?.classList.remove('active'));
 
     return () => {
-      registerBtn?.removeEventListener('click', () => {});
-      loginBtn?.removeEventListener('click', () => {});
+      registerBtn?.removeEventListener('click', () => { });
+      loginBtn?.removeEventListener('click', () => { });
     };
   }, []);
 
-  
+
 
   const validateField = (name, value) => {
     let error = '';
@@ -68,6 +72,22 @@ const LoginRegister = ({ onLoginSuccess }) => {
     }
 
     setErrors(prev => ({ ...prev, [name]: error }));
+  };
+
+
+  // formulario de olvido de contraseña
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setForgotSuccess('');
+    setForgotError('');
+    try {
+      // Aquí deberías llamar a tu endpoint real de recuperación
+      await api.forgotPassword({ email: forgotEmail });
+      setForgotSuccess('¡Te hemos enviado un correo para restablecer tu contraseña!');
+      setForgotEmail('');
+    } catch (error) {
+      setForgotError('No pudimos enviar el correo. Verifica tu email.');
+    }
   };
 
   const handleRegisterChange = (e) => {
@@ -172,6 +192,35 @@ const LoginRegister = ({ onLoginSuccess }) => {
   }
 
   return (
+    <>
+    {showForgotForm && (
+      <div className="forgot-modal-overlay">
+        <div className="forgot-modal">
+          <button className="close-btn" onClick={() => {
+            setShowForgotForm(false);
+            setForgotSuccess('');
+            setForgotError('');
+            setForgotEmail('');
+          }}>&times;</button>
+          <h2>¿Olvidaste tu contraseña?</h2>
+          <p>Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
+          <form onSubmit={handleForgotSubmit}>
+            <input
+              type="email"
+              placeholder="Correo electrónico"
+              value={forgotEmail}
+              onChange={e => setForgotEmail(e.target.value)}
+              required
+              autoFocus
+            />
+            <button type="submit" className="btn" style={{ marginTop: 12 }}>Enviar enlace</button>
+          </form>
+          {forgotSuccess && <div className="success-message">{forgotSuccess}</div>}
+          {forgotError && <div className="error-message">{forgotError}</div>}
+        </div>
+      </div>
+    )}
+
     <div className="login-register">
       <div className="container">
         <div className="form-box login">
@@ -204,7 +253,11 @@ const LoginRegister = ({ onLoginSuccess }) => {
             <button type="submit" className="btn" disabled={isLoading}>
               {isLoading ? 'Procesando...' : 'Iniciar sesión'}
             </button>
-            <a href="#">¿Olvidaste tu contraseña?</a>
+            <div className="forgot-link">
+              <a href="#" onClick={e => { e.preventDefault(); setShowForgotForm(true); }}>
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
           </form>
         </div>
 
@@ -302,6 +355,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
         </div>
       </div>
     </div>
+     </>
   );
 };
 

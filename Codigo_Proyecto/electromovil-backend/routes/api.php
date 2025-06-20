@@ -9,7 +9,8 @@ use App\Http\Controllers\ApplianceController;
 // Rutas públicas
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-
+Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
  
 // Rutas protegidas
 
@@ -25,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //consulta de datos del mismo cliente
     Route::get('/me', [AuthController::class, 'me']);
+     // <--- Agrega esta línea
 
     // consulta de tecnicos 
     Route::get('/users/by-role', [UserController::class, 'indexByRole']);

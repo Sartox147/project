@@ -19,8 +19,11 @@ const Tecnico = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [mostrarCompletados, setMostrarCompletados] = useState(false);
   const [mostrarCancelados, setMostrarCancelados] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [tipoReporteSeleccionado, setTipoReporteSeleccionado] = useState('');
+  const [showEstados, setShowEstados] = useState(false);
 
-  // Datos del técnico
+  // Estado para almacenar los datos del perfil del técnico
   const [profile, setProfile] = useState({
     name: '',
     email: '',
@@ -30,6 +33,26 @@ const Tecnico = () => {
     password: '',
     password_confirmation: ''
   });
+
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get('/me');
+        setProfile(prev => ({
+          ...prev,
+          id: res.data.id, // Guarda el id aquí
+          name: res.data.name || '',
+          email: res.data.email || '',
+          phone: res.data.phone || '',
+          address: res.data.address || ''
+        }));
+      } catch (error) {
+        console.error('Error al cargar el perfil:', error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   // Estado para almacenar los datos de los clientes por id
   const [clientes, setClientes] = useState({});
@@ -58,26 +81,29 @@ const Tecnico = () => {
   }, [servicios]);
 
   // Datos de servicios con los nuevos campos solicitados
+  const fetchServiciosAsignados = async () => {
+    setLoading(true);
+    try {
+      const userData = JSON.parse(localStorage.getItem('userData')); // obtenemos el id del técnico logueado
+      const tecnicoId = userData?.id; // este id debe ser el que corresponde en la tabla 'users'
+
+      const response = await api.get('/mis');
+      setServicios(response.data);
+    } catch (error) {
+      console.error('Error al cargar los servicios asignados:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchServiciosAsignados = async () => {
-      try {
-        const userData = JSON.parse(localStorage.getItem('userData')); // obtenemos el id del técnico logueado
-        const tecnicoId = userData?.id; // este id debe ser el que corresponde en la tabla 'users'
-
-        const response = await api.get('/mis');
-        setServicios(response.data);
-      } catch (error) {
-        console.error('Error al cargar los servicios asignados:', error);
-      }
-    };
-
     fetchServiciosAsignados();
   }, []);
 
 
   // Función para cambiar disponibilidad
   const cambiarDisponibilidad = () => {
+    setShowEstados(false); // Cierra el menú al cambiar la disponibilidad
     if (availability === 'disponible') {
       setAvailability('ocupado');
     } else if (availability === 'ocupado') {
@@ -132,14 +158,22 @@ const Tecnico = () => {
 
 
     try {
+      let nuevoEstado = 'en_proceso';
+      if (tipoReporte && tipoReporte.trim().toLowerCase() === 'completado') {
+        nuevoEstado = 'completado';
+      } else if (tipoReporte && tipoReporte.trim().toLowerCase() === 'cancelado') {
+        nuevoEstado = 'cancelado';
+      }
+
       await api.put(`/servicios/${servicioId}`, {
         diagnostico: tipoReporte,
         solucion: detalles,
         costo: costoValor,
-        estado: 'en_proceso' // Cambia el estado a en proceso al enviar un reporte
+        estado: nuevoEstado
       });
 
       alert('Reporte enviado correctamente');
+      fetchServiciosAsignados();
       e.target.reset();
       setCostoValor('');
     } catch (error) {
@@ -148,33 +182,62 @@ const Tecnico = () => {
     }
   };
 
+
   // Función para actualizar perfil
-  const actualizarPerfil = (e) => {
+  const actualizarPerfil = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const updatedProfile = {
-      ...profile,
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      address: formData.get('address')
-    };
-
-    if (formData.get('password') && formData.get('password') === formData.get('password_confirmation')) {
-      updatedProfile.password = formData.get('password');
+    if (!profile.id) {
+      alert('No se encontró información del usuario. Por favor, vuelve a iniciar sesión.');
+      return;
     }
-
-    setProfile(updatedProfile);
-    alert('Perfil actualizado correctamente');
-    setShowProfileModal(false);
+    // Construye el objeto solo con los campos necesarios
+    const data = {
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone,
+      address: profile.address
+    };
+    // Solo agrega los campos de contraseña si el usuario los llenó
+    if (profile.password) {
+      data.password = profile.password;
+      data.password_confirmation = profile.password_confirmation;
+      data.current_password = profile.current_password;
+    }
+    try {
+      await api.put(`/users/${profile.id}`, data);
+      alert('Perfil actualizado correctamente');
+      setShowProfileModal(false);
+      setProfile(prev => ({
+        ...prev,
+        current_password: '',
+        password: '',
+        password_confirmation: ''
+      }));
+    } catch (error) {
+      // Muestra los errores del backend si existen
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errores = error.response.data.errors;
+        alert(Object.values(errores).flat().join('\n'));
+      } else {
+        alert('Error al actualizar el perfil');
+      }
+      console.error(error);
+    }
   };
-
   // Función para manejar cambio en inputs de perfil
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile(prev => ({ ...prev, [name]: value }));
   };
 
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <span>Cargando...</span>
+      </div>
+    );
+  }
   return (
     <div className="technician-container">
       {/* Header compacto */}
@@ -182,14 +245,28 @@ const Tecnico = () => {
         <h1>ElectroMovil</h1>
         <div className="header-controls">
           <div className="availability-container">
-            <button
-              className={`availability-btn ${availability}`}
-              onClick={cambiarDisponibilidad}
+            <div
+              className="availability-dropdown"
+              onMouseEnter={() => setShowEstados(true)}
+              onMouseLeave={() => setShowEstados(false)}
             >
-              {availability === 'disponible' && 'Disponible'}
-              {availability === 'ocupado' && 'Ocupado'}
-              {availability === 'break' && 'En descanso'}
-            </button>
+              <button
+                className={`availability-btn ${availability}`}
+                onClick={() => setShowEstados(!showEstados)}
+                type="button"
+              >
+                {availability === 'disponible' && 'Disponible'}
+                {availability === 'ocupado' && 'Ocupado'}
+                {availability === 'break' && 'En descanso'}
+              </button>
+              {showEstados && (
+                <div className="availability-menu">
+                  <div className="disponible" onClick={() => cambiarDisponibilidad('disponible')}>Disponible</div>
+                  <div className="ocupado" onClick={() => cambiarDisponibilidad('ocupado')}>Ocupado</div>
+                  <div className="break" onClick={() => cambiarDisponibilidad('break')}>En descanso</div>
+                </div>
+              )}
+            </div>
             <button
               className="profile-btn"
               onClick={() => setShowProfileModal(true)}>
@@ -241,28 +318,9 @@ const Tecnico = () => {
                         <p><FontAwesomeIcon icon={faIndustry} /> <strong>Marca:</strong> {servicio.marca}</p>
                         <p><FontAwesomeIcon icon={faBarcode} /> <strong>Modelo:</strong> {servicio.modelo}</p>
                         <p><FontAwesomeIcon icon={faExclamationTriangle} /> <strong>Problema:</strong> {servicio.descripcion_problema}</p>
+                        <p><FontAwesomeIcon icon={faFileAlt} /> <strong>Diagnóstico:</strong> {servicio.diagnostico || 'N/A'}</p>
+                        <p><FontAwesomeIcon icon={faFileAlt} /> <strong>Costo:</strong> ${parseInt(servicio.costo || 0).toLocaleString('es-CO')}</p>
                       </div>
-                    </div>
-
-                    <div className="service-actions">
-                      <div className="dropdown">
-                        <button className="action-btn">Cambiar estado</button>
-                        <div className="dropdown-content">
-                          <button onClick={() => cambiarEstadoServicio(servicio.id, 'pendiente')}>
-                            <FontAwesomeIcon icon={faClock} /> Pendiente
-                          </button>
-                          <button onClick={() => cambiarEstadoServicio(servicio.id, 'en_proceso')}>
-                            <FontAwesomeIcon icon={faSpinner} /> En proceso
-                          </button>
-                          <button onClick={() => cambiarEstadoServicio(servicio.id, 'completado')}>
-                            <FontAwesomeIcon icon={faCheckCircle} /> Completado
-                          </button>
-                          <button onClick={() => cambiarEstadoServicio(servicio.id, 'cancelado')}>
-                            <FontAwesomeIcon icon={faTimesCircle} /> Cancelado
-                          </button>
-                        </div>
-                      </div>
-
                     </div>
                   </div>
                 ))}
@@ -365,32 +423,10 @@ const Tecnico = () => {
                 </div>
               )
             )}
-          </section>        
-          </div>
-
+          </section>
+        </div>
         {/* Sección derecha - Mapa y reportes */}
         <div className="right-side-column">
-          {/* Tarjeta de mapa */}
-          <section className="map-section">
-            <div className="section-header">
-              <FontAwesomeIcon icon={faMapMarkerAlt} />
-              <h2>Mapa de Visitas</h2>
-            </div>
-            <div className="map-container">
-              <iframe
-                title="Mapa de visitas"
-                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d63631.70277658661!2d-74.10483199999999!3d4.5973504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sco!4v1734488019385!5m2!1ses!2sco"
-                allowFullScreen
-                loading="lazy"
-              ></iframe>
-              <div className="map-locations">
-                <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Sgacchi</p>
-                <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Ka Tabanca</p>
-                <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Temposo</p>
-              </div>
-            </div>
-          </section>
-
           {/* Tarjeta de reportes */}
           <section className="report-section">
             <div className="section-header">
@@ -412,11 +448,12 @@ const Tecnico = () => {
 
               <div className="form-group">
                 <label>Tipo de Reporte</label>
-                <select name="tipo_reporte" required>
+                <select name="tipo_reporte" required value={tipoReporteSeleccionado} onChange={e => setTipoReporteSeleccionado(e.target.value)}>
                   <option value="Avance de trabajo">Avance de trabajo</option>
                   <option value="Necesidad de repuestos">Necesidad de repuestos</option>
                   <option value="problema encontrado">Problema encontrado</option>
                   <option value="completado">Trabajo completado</option>
+                  <option value="cancelado">Cliente ya no desea el servicio</option>
                 </select>
               </div>
 
@@ -424,31 +461,55 @@ const Tecnico = () => {
                 <label>Detalles</label>
                 <textarea name="detalles" rows="3" required></textarea>
               </div>
-              <div className="form-group">
-                <label>Costo</label>
-                <input
-                  type="text"
-                  name="costo_mostrar"
-                  required
-                  inputMode="numeric"
-                  placeholder="$0"
-                  value={costoValor ? `$${parseInt(costoValor, 10).toLocaleString('es-CO')}` : ''}
-                  onChange={e => {
-                    const raw = e.target.value.replace(/[^\d]/g, '');
-                    setCostoValor(raw);
-                  }}
-                />
-              </div>
+              {tipoReporteSeleccionado !== 'cancelado' && (
+                <>
+                  <div className="form-group">
+                    <label>Costo</label>
+                    <input
+                      type="text"
+                      name="costo_mostrar"
+                      required
+                      inputMode="numeric"
+                      placeholder="$0"
+                      value={costoValor ? `$${parseInt(costoValor, 10).toLocaleString('es-CO')}` : ''}
+                      onChange={e => {
+                        const raw = e.target.value.replace(/[^\d]/g, '');
+                        setCostoValor(raw);
+                      }}
+                    />
+                  </div>
 
-              <div className="form-group">
-                <label>Subir foto (opcional)</label>
-                <input type="file" name="foto" accept="image/*" />
-              </div>
-
+                  <div className="form-group">
+                    <label>Subir foto (opcional)</label>
+                    <input type="file" name="foto" accept="image/*" />
+                  </div>
+                </>
+              )}
               <button type="submit" className="submit-btn">
                 <FontAwesomeIcon icon={faFileAlt} /> Enviar Reporte
               </button>
             </form>
+          </section>
+
+          {/* Tarjeta de mapa */}
+          <section className="map-section">
+            <div className="section-header">
+              <FontAwesomeIcon icon={faMapMarkerAlt} />
+              <h2>Mapa de Visitas</h2>
+            </div>
+            <div className="map-container">
+              <iframe
+                title="Mapa de visitas"
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d63631.70277658661!2d-74.10483199999999!3d4.5973504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sco!4v1734488019385!5m2!1ses!2sco"
+                allowFullScreen
+                loading="lazy"
+              ></iframe>
+              <div className="map-locations">
+                <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Sgacchi</p>
+                <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Ka Tabanca</p>
+                <p><FontAwesomeIcon icon={faMapMarkerAlt} /> Temposo</p>
+              </div>
+            </div>
           </section>
         </div>
       </main>

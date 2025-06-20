@@ -45,8 +45,12 @@ api.interceptors.response.use(
     return Promise.reject(error.response?.data || error);
   }
 );
+const forgotPassword = (data) => {
+  return api.post('/forgot-password', data);
+};
 
 const apiService = {
+  forgotPassword,
   async register(userData) {
     const registrationData = {
       ...userData,
