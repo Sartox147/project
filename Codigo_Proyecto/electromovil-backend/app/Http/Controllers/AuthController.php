@@ -11,15 +11,51 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
 
+/**
+ * @OA\SecurityScheme(
+ *     securityScheme="sanctum",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
+ */
 class AuthController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Registrar un nuevo usuario",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","password_confirmation","role","phone","address"},
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password"),
+     *             @OA\Property(property="role", type="string", enum={"cliente","tecnico"}),
+     *             @OA\Property(property="phone", type="string"),
+     *             @OA\Property(property="address", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Usuario registrado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="user", ref="#/components/schemas/User")
+     *         )
+     *     )
+     * )
+     */
     public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|in:cliente,tecnico', // Solo permite registrar clientes o técnicos
+            'role' => 'required|in:cliente,tecnico',
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:255'
         ]);
@@ -41,26 +77,44 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Iniciar sesión",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Inicio de sesión exitoso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="token_type", type="string"),
+     *             @OA\Property(property="user", ref="#/components/schemas/User")
+     *         )
+     *     )
+     * )
+     */
     public function login(Request $request)
     {
-        // Validar credenciales
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // Intentar autenticar
         if (!Auth::attempt($credentials)) {
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
 
-        // Obtener el usuario autenticado
         $user = Auth::user();
-
-        // Crear el token
         $token = $user->createToken('api-token')->plainTextToken;
 
-        // Retornar el token y el usuario si deseas
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
@@ -68,6 +122,21 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Cerrar sesión",
+     *     tags={"Auth"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sesión cerrada correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -76,62 +145,98 @@ class AuthController extends Controller
             'message' => 'Successfully logged out'
         ]);
     }
-    public function indexByRole()
-    {
-        $fields = ['id', 'name', 'email', 'phone', 'created_at'];
 
-        return response()->json([
-            'clientes' => User::where('role', 'cliente')->select($fields)->get(),
-            'tecnicos' => User::where('role', 'tecnico')->select($fields)->get()
-        ]);
-    }
+    /**
+     * @OA\Get(
+     *     path="/api/me",
+     *     summary="Obtener usuario autenticado",
+     *     tags={"Auth"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Datos del usuario autenticado",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     )
+     * )
+     */
     public function me(Request $request)
     {
         return response()->json($request->user());
     }
-    public function destroy(User $user)
-    {
-        // Solo admin puede eliminar usuarios
-        if (!auth()->user()->isAdmin()) {
-            return response()->json(['message' => 'Acceso denegado, no eres administrador'], 403);
-        }
 
-        $user->delete();
-        return response()->json(['message' => 'Usuario eliminado correctamente.']);
-    }
+    /**
+     * @OA\Post(
+     *     path="/api/password/email",
+     *     summary="Enviar enlace de restablecimiento de contraseña",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", format="email")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Enlace enviado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="No se pudo enviar el enlace")
+     * )
+     */
     public function sendResetLinkEmail(Request $request)
     {
-    $request->validate(['email' => 'required|email']);
+        $request->validate(['email' => 'required|email']);
 
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
+        $status = Password::sendResetLink($request->only('email'));
 
-    return $status === Password::RESET_LINK_SENT
-    ? response()->json(['message' => __($status)])
-    : response()->json(['message' => __($status)], 400);
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json(['message' => __($status)])
+            : response()->json(['message' => __($status)], 400);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/password/reset",
+     *     summary="Restablecer contraseña",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"token","email","password","password_confirmation"},
+     *             @OA\Property(property="token", type="string"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Contraseña restablecida correctamente"),
+     *     @OA\Response(response=400, description="No se pudo restablecer la contraseña")
+     * )
+     */
     public function resetPassword(Request $request)
     {
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|email',
-        'password' => 'required|min:8|confirmed',
-    ]);
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
 
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function ($user, $password) {
-            $user->password = bcrypt($password);
-            $user->setRememberToken(Str::random(60));
-            $user->save();
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->password = bcrypt($password);
+                $user->setRememberToken(Str::random(60));
+                $user->save();
 
-            event(new PasswordReset($user));
-        }
-    );
+                event(new PasswordReset($user));
+            }
+        );
 
-    return $status === Password::PASSWORD_RESET
-        ? response()->json(['message' => 'Contraseña restablecida correctamente.'])
-        : response()->json(['message' => 'No se pudo restablecer la contraseña.'], 400);
+        return $status === Password::PASSWORD_RESET
+            ? response()->json(['message' => 'Contraseña restablecida correctamente.'])
+            : response()->json(['message' => 'No se pudo restablecer la contraseña.'], 400);
     }
 }
