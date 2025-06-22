@@ -242,7 +242,7 @@ const Tecnico = () => {
     <div className="technician-container">
       {/* Header compacto */}
       <header className="compact-header">
-        <h1>ElectroMovil</h1>
+        <h1>ElectroElite</h1>
         <div className="header-controls">
           <div className="availability-container">
             <div
@@ -616,7 +616,7 @@ const Tecnico = () => {
 
       {/* Footer */}
       <footer className="app-footer">
-        <p>&copy; {new Date().getFullYear()} ElectroMovil. Todos los derechos reservados.</p>
+        <p>&copy; {new Date().getFullYear()} ElectroElite. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

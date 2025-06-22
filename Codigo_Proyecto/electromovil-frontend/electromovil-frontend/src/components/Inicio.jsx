@@ -10,7 +10,7 @@ const Inicio = () => {
             {/* Header */}
             <header>
                 <nav>
-                    <a href="/" className="logo">ElectroMovil</a>
+                    <a href="/" className="logo">ElectroElite</a>
 
                     <input type="checkbox" id="menu-toggle" className="menu-toggle" />
                     <label htmlFor="menu-toggle" className="menu-icon">&#9776;</label>
@@ -86,7 +86,7 @@ const Inicio = () => {
                 <section id="contacto" className="contacto">
                     <h2>Contacto</h2>
                     <p>¿Tienes alguna pregunta o necesitas asistencia? Contáctanos y te ayudaremos con gusto.</p>
-                    <p>Email: contacto@electromovil.com</p>
+                    <p>Email: contacto@ElectroElite.com</p>
                     <p>Teléfono: +57 322 325 3844</p>
                 </section>
             </main>
@@ -94,7 +94,7 @@ const Inicio = () => {
             {/* Footer */}
         <footer className="app-footer">
           <div className="footer-content">
-            <p>&copy; {new Date().getFullYear()} ElectroMovil. Todos los derechos reservados.</p>
+            <p>&copy; {new Date().getFullYear()} ElectroElite. Todos los derechos reservados.</p>
             <div className="footer-links">
               <a href="#">Términos y condiciones</a>
               <a href="#">Política de privacidad</a>
