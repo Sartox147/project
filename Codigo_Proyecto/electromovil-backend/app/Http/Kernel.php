@@ -36,6 +36,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             // Este middleware sigue estando en el grupo 'web'
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \L5Swagger\Http\Middleware\SwaggerDocs::class,
         ],
     ];
 

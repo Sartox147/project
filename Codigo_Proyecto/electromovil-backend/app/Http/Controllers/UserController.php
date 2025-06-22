@@ -6,6 +6,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @OA\Tag(
+ *     name="Users",
+ *     description="Operaciones relacionadas con los usuarios"
+ * )
+ */
 class UserController extends Controller
 {
     public function __construct()
@@ -13,6 +19,19 @@ class UserController extends Controller
         $this->middleware('auth:sanctum');
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/users",
+     *     summary="Listar usuarios según el rol del autenticado",
+     *     tags={"Users"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de usuarios",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/User"))
+     *     )
+     * )
+     */
     public function index()
     {
         $user = Auth::user();
@@ -28,6 +47,31 @@ class UserController extends Controller
         return response()->json($users);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/users",
+     *     summary="Crear un nuevo usuario",
+     *     tags={"Users"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","role","phone","address"},
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password"),
+     *             @OA\Property(property="role", type="string", enum={"admin","tecnico","cliente"}),
+     *             @OA\Property(property="phone", type="string"),
+     *             @OA\Property(property="address", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Usuario creado",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     )
+     * )
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -51,6 +95,17 @@ class UserController extends Controller
         return response()->json($user, 201);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/users/{id}",
+     *     summary="Mostrar un usuario",
+     *     tags={"Users"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Usuario encontrado", @OA\JsonContent(ref="#/components/schemas/User")),
+     *     @OA\Response(response=403, description="No autorizado")
+     * )
+     */
     public function show(User $user)
     {
         $currentUser = Auth::user();
@@ -62,6 +117,26 @@ class UserController extends Controller
         return response()->json(['message' => 'No autorizado'], 403);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/users/{id}",
+     *     summary="Actualizar un usuario",
+     *     tags={"Users"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string"),
+     *             @OA\Property(property="role", type="string"),
+     *             @OA\Property(property="phone", type="string"),
+     *             @OA\Property(property="address", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Usuario actualizado", @OA\JsonContent(ref="#/components/schemas/User"))
+     * )
+     */
     public function update(Request $request, User $user)
     {
         $request->validate([
@@ -75,6 +150,10 @@ class UserController extends Controller
 
         $data = $request->all();
 
+        if (isset($data['role']) && auth()->user()->role !== 'admin') {
+            unset($data['role']);
+        }
+
         if ($request->has('password')) {
             $data['password'] = bcrypt($request->password);
         }
@@ -84,24 +163,67 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function destroy(User $user)
+    /**
+     * @OA\Delete(
+     *     path="/api/users/{id}",
+     *     summary="Eliminar un usuario",
+     *     tags={"Users"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Usuario eliminado"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Acceso denegado"
+     *     )
+     * )
+     */
+    public function destroy($id)
     {
         if (!auth()->user()->isAdmin()) {
             return response()->json(['message' => 'Acceso denegado, no eres administrador'], 403);
         }
 
+        $user = User::findOrFail($id);
         $user->delete();
+
         return response()->noContent();
     }
-    public function indexByRole()
-    {
-        $fields = ['id', 'name', 'email', 'phone', 'created_at'];
 
-        return response()->json([
-            'clientes' => User::where('role', 'cliente')->select($fields)->get(),
-            'tecnicos' => User::where('role', 'tecnico')->select($fields)->get()
-        ]);
+    /**
+     * @OA\Get(
+     *     path="/api/users/by-role",
+     *     summary="Listar usuarios por rol",
+     *     tags={"Users"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="role", in="query", required=true, @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Usuarios filtrados por rol", @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/User")))
+     * )
+     */
+    public function indexByRole(Request $request)
+    {
+        $role = $request->query('role');
+        $users = User::where('role', $role)->get();
+        return response()->json($users);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/users/tecnicos/disponibles",
+     *     summary="Listar técnicos disponibles (solo admin)",
+     *     tags={"Users"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Técnicos disponibles", @OA\JsonContent(type="object", @OA\Property(property="tecnicos", type="array", @OA\Items(ref="#/components/schemas/User")))),
+     *     @OA\Response(response=403, description="No autorizado")
+     * )
+     */
     public function tecnicosDisponibles()
     {
         if (!auth()->user()->isAdmin()) {
@@ -114,5 +236,4 @@ class UserController extends Controller
                 ->get()
         ]);
     }
-
 }
