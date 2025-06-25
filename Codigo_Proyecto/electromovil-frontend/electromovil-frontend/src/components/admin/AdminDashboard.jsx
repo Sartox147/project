@@ -174,7 +174,7 @@ const AdminDashboard = () => {
   return (
     <div className="usuario-container">
       <header className="compact-header">
-        <h1 onClick={handleElectroMovilClick} style={{ cursor: 'pointer' }}>ElectroMovil</h1>
+        <h1 onClick={handleElectroMovilClick} style={{ cursor: 'pointer' }}>ElectroElite</h1>
         <div className="header-controls">
           <div className="controls-spacer"></div>
           <button
@@ -204,13 +204,12 @@ const AdminDashboard = () => {
             </div>
           </div>
         ) : (
-          <div className="row">
-            <div className="col-md-10">
-              <div className="content-container">
-                <Outlet />
-              </div>
+          <div className="admin-content">
+            <div className="content-container" style={{ width: "100%", maxWidth: "100%", padding: 0, boxShadow: "none", background: "transparent" }}>
+              <Outlet />
             </div>
           </div>
+
         )}
       </div>
 
@@ -319,7 +318,7 @@ const AdminDashboard = () => {
 
       <footer className="app-footer">
         <div className="footer-content">
-          <p>&copy; {new Date().getFullYear()} ElectroMovil. Todos los derechos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} ElectroElite. Todos los derechos reservados.</p>
           <div className="footer-links">
             <a href="#">Términos y condiciones</a>
             <a href="#">Política de privacidad</a>

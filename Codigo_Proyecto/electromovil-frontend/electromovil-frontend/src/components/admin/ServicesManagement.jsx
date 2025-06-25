@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Form, Modal, Alert, Badge } from 'react-bootstrap';
+import { Table, Button, Form, Modal, Alert, Badge, Dropdown } from 'react-bootstrap';
 import apiService, { api } from '../../services/api.js'; // solo necesitas esta línea
+import { FaEdit, FaExchangeAlt } from "react-icons/fa";
 
 const ServicesManagement = () => {
   const [services, setServices] = useState([]);
@@ -207,32 +208,42 @@ const ServicesManagement = () => {
                 <td>{getStatusBadge(service.estado)}</td>
                 <td>{service.fecha_solicitud}</td>
                 <td>
-                  <Button variant="info" size="sm" onClick={() => handleEdit(service)}>Editar</Button>
-                  <div className="btn-group ms-2">
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={() => handleStatusChange(service.id, 'pendiente')}
-                      active={service.estado === 'pendiente'}
-                    >
-                      Pendiente
+                  <div className="services-actions">
+                    <Button variant="info" size="sm" onClick={() => handleEdit(service)}>
+                      <FaEdit style={{ marginRight: 4 }} /> Editar
                     </Button>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={() => handleStatusChange(service.id, 'en_proceso')}
-                      active={service.estado === 'en_proceso'}
-                    >
-                      En Proceso
-                    </Button>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={() => handleStatusChange(service.id, 'completado')}
-                      active={service.estado === 'completado'}
-                    >
-                      Completado
-                    </Button>
+                    <Dropdown>
+                      <Dropdown.Toggle variant="outline-primary" size="sm" id={`dropdown-status-${service.id}`}>
+                        <FaExchangeAlt style={{ marginRight: 4 }} />
+                        Cambiar estado
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item
+                          active={service.estado === 'pendiente'}
+                          onClick={() => handleStatusChange(service.id, 'pendiente')}
+                        >
+                          Pendiente
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          active={service.estado === 'en_proceso'}
+                          onClick={() => handleStatusChange(service.id, 'en_proceso')}
+                        >
+                          En Proceso
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          active={service.estado === 'completado'}
+                          onClick={() => handleStatusChange(service.id, 'completado')}
+                        >
+                          Completado
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          active={service.estado === 'cancelado'} 
+                          onClick={() => handleStatusChange(service.id, 'cancelado')}
+                        >
+                          Cancelado
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </div>
                 </td>
               </tr>
