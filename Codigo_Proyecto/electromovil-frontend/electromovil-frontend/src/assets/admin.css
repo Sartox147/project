@@ -57,9 +57,10 @@
   padding: 2.5rem 2rem 1.5rem 2rem;
   background: #f8fafc;
   border-radius: 22px;
-  box-shadow: 0 6px 32px rgba(44,62,80,0.10);
+  box-shadow: none;
   margin: 2rem auto 0 auto;
   max-width: 1400px;
+
 }
 
 .dashboard-title {
