@@ -4,7 +4,7 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { faMapMarkerAlt, faTasks, faFileAlt, faUser, faPhone, faEnvelope, faHome, faLock } from '@fortawesome/free-solid-svg-icons';
 import '../../assets/admin.css';
 import { api } from '../../services/api';
-import { FaUser } from 'react-icons/fa';
+import { BiGroup, BiWrench, BiReceipt, BiBarChartAlt2 } from "react-icons/bi";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -131,7 +131,7 @@ const AdminDashboard = () => {
       navigate('/login-register', { replace: true });
     }
   };
- 
+
   const handleElectroMovilClick = () => {
     navigate('/admin');
   };
@@ -140,25 +140,25 @@ const AdminDashboard = () => {
   const dashboardOptions = [
     {
       path: 'users',
-      icon: 'bi-people-fill',
+      icon: <BiGroup />,
       title: 'Gestión de Usuarios',
       description: 'Administra los usuarios del sistema, roles y permisos.'
     },
     {
       path: 'services',
-      icon: 'bi-tools',
+      icon: <BiWrench />,
       title: 'Gestión de Servicios',
       description: 'Gestiona los servicios ofrecidos por la empresa.'
     },
     {
       path: 'invoices',
-      icon: 'bi-receipt',
+      icon: <BiReceipt />,
       title: 'Gestión de Facturas',
       description: 'Administra las facturas y transacciones de los clientes.'
     },
     {
       path: 'reports',
-      icon: 'bi-graph-up',
+      icon: <BiBarChartAlt2 />,
       title: 'Reportes',
       description: 'Genera reportes y estadísticas del sistema.'
     }
@@ -195,7 +195,7 @@ const AdminDashboard = () => {
               {dashboardOptions.map(option => (
                 <Link to={option.path} key={option.path} className="dashboard-card">
                   <div className="card-icon">
-                    <i className={`bi ${option.icon}`}></i>
+                    {option.icon}
                   </div>
                   <h3>{option.title}</h3>
                   <p>{option.description}</p>
