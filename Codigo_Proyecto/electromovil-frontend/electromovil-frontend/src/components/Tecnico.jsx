@@ -119,7 +119,7 @@ const Tecnico = () => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('auth_token');
       localStorage.removeItem('userData');
       navigate('/login-register', { replace: true });
     }

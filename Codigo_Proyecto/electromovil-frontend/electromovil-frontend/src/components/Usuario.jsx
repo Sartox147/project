@@ -384,7 +384,7 @@ const Usuario = () => {
               </div>
               <div className="form-group">
                 <label>Fecha de Solicitud</label>
-                <input type="date" name="fecha_solicitud" value={serviceData.fecha_solicitud} onChange={handleServiceInputChange} required />
+                <input type="date" name="fecha_solicitud" value={serviceData.fecha_solicitud} onChange={handleServiceInputChange} required min={new Date().toISOString().split("T")[0]} />
               </div>
             </div>
             <div className="form-submit">

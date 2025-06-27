@@ -126,7 +126,7 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('auth_token');
       localStorage.removeItem('userData');
       navigate('/login-register', { replace: true });
     }
@@ -150,18 +150,18 @@ const AdminDashboard = () => {
       title: 'Gestión de Servicios',
       description: 'Gestiona los servicios ofrecidos por la empresa.'
     },
-    {
-      path: 'invoices',
-      icon: <BiReceipt />,
-      title: 'Gestión de Facturas',
-      description: 'Administra las facturas y transacciones de los clientes.'
-    },
-    {
-      path: 'reports',
-      icon: <BiBarChartAlt2 />,
-      title: 'Reportes',
-      description: 'Genera reportes y estadísticas del sistema.'
-    }
+    //{
+     // path: 'invoices',
+      //icon: <BiReceipt />,
+      //title: 'Gestión de Facturas',
+      //description: 'Administra las facturas y transacciones de los clientes.'
+    //},
+    //{
+      //path: 'reports',
+      //icon: <BiBarChartAlt2 />,
+      //title: 'Reportes',
+      //description: 'Genera reportes y estadísticas del sistema.'
+    //}
   ];
   if (loading) {
     return (

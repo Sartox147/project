@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
 
     //Ruta de eliminación de usuarios
-    Route::delete('users/{user}', [AuthController::class, 'destroy']);
+    Route::delete('users/{user}', [UserController::class, 'destroy']);
  
     // Rutas de admin // asignacion de tecnicos
     //Route::post('/servicios/{servicio}/asignar-tecnico', [ServicioController::class, 'asignarTecnico']);
