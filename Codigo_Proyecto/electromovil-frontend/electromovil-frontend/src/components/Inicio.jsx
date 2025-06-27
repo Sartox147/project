@@ -98,10 +98,10 @@ const Inicio = () => {
                     <p>Email: <a href="mailto:contacto@ElectroElite.com" className="contact-link">contacto@ElectroElite.com</a></p>
                     <p>Teléfono: <a href="tel:+573223253844" className="contact-link">+57 322 325 3844</a></p>
                     <div className="social-icons-contact">
-                        <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" className="social-btn facebook" title="Facebook">
+                        <a href="https://facebook.com/electroelite" target="_blank" rel="noopener noreferrer" className="social-btn facebook" title="Facebook">
                             <FaFacebookF />
                         </a>
-                        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" className="social-btn instagram" title="Instagram">
+                        <a href="https://instagram.com/electroelite" target="_blank" rel="noopener noreferrer" className="social-btn instagram" title="Instagram">
                             <FaInstagram />
                         </a>
                         <a href="https://wa.me/573223253844" target="_blank" rel="noopener noreferrer" className="social-btn whatsapp" title="WhatsApp">

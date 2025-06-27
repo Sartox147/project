@@ -126,9 +126,13 @@ body {
   padding: 2.5rem 1.5rem;
   background-color: var(--white);
   border-radius: 8px;
-  margin: 1.5rem auto;
+  margin: 1.5rem 0;
+  width: 100%;
   max-width: 1200px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  /* Centra solo si la pantalla es muy grande */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .section-header {

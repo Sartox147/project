@@ -308,7 +308,7 @@ const Usuario = () => {
     <UserContext.Provider value={{ userData, fetchUserData }}>
       <div className="usuario-container">
         <header className="compact-header">
-          <h1>ElectroMovil</h1>
+          <h1>ElectroElite</h1>
           <div className="header-controls">
             <div className="controls-spacer"></div>
             <button className="profile-btn" onClick={() => setShowProfileModal(true)}>
@@ -563,7 +563,7 @@ const Usuario = () => {
         <section className="benefits-section">
           <div className="section-header">
             <h2>Nuestros Beneficios</h2>
-            <p>Con ElectroMovil, tienes la seguridad de un servicio confiable y garantizado</p>
+            <p>Con ElectroElite, tienes la seguridad de un servicio confiable y garantizado</p>
           </div>
           <div className="benefits-grid">
             {[
@@ -674,7 +674,7 @@ const Usuario = () => {
 
         <footer className="app-footer">
           <div className="footer-content">
-            <p>&copy; {new Date().getFullYear()} ElectroMovil. Todos los derechos reservados.</p>
+            <p>&copy; {new Date().getFullYear()} ElectroElite. Todos los derechos reservados.</p>
             <div className="footer-links">
               <a href="#">Términos y condiciones</a>
               <a href="#">Política de privacidad</a>
