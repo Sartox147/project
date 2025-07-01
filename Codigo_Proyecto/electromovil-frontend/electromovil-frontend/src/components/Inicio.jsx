@@ -3,6 +3,7 @@ import '../assets/Inicio.css';
 import imagen1 from '../assets/img/imagen1.jpg';
 import imagen2 from '../assets/img/imagen2.webp';
 import imagen3 from '../assets/img/imagen3.jpg';
+import logoImg from '../assets/img/logo.png';
 
 // Puedes usar react-icons para mejores íconos sociales
 import { FaFacebookF, FaInstagram, FaWhatsapp } from 'react-icons/fa';
@@ -13,7 +14,10 @@ const Inicio = () => {
             {/* Header */}
             <header>
                 <nav>
-                    <a href="/" className="logo">ElectroElite</a>
+                    <a href="/" className="logo">
+                        <img src={logoImg} alt="Logo" className="logo-img" />
+                        ElectroElite
+                    </a>
                     <input type="checkbox" id="menu-toggle" className="menu-toggle" />
                     <label htmlFor="menu-toggle" className="menu-icon">&#9776;</label>
                     <div className="nav-links">
@@ -98,10 +102,10 @@ const Inicio = () => {
                     <p>Email: <a href="mailto:contacto@ElectroElite.com" className="contact-link">contacto@ElectroElite.com</a></p>
                     <p>Teléfono: <a href="tel:+573223253844" className="contact-link">+57 322 325 3844</a></p>
                     <div className="social-icons-contact">
-                        <a href="https://facebook.com/electroelite" target="_blank" rel="noopener noreferrer" className="social-btn facebook" title="Facebook">
+                        <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" className="social-btn facebook" title="Facebook">
                             <FaFacebookF />
                         </a>
-                        <a href="https://instagram.com/electroelite" target="_blank" rel="noopener noreferrer" className="social-btn instagram" title="Instagram">
+                        <a href="https://www.instagram.com/servitecnicoselectroelite/?utm_source=qr&igsh=YXZ4bnFkaWNmenNp#" target="_blank" rel="noopener noreferrer" className="social-btn instagram" title="Instagram">
                             <FaInstagram />
                         </a>
                         <a href="https://wa.me/573223253844" target="_blank" rel="noopener noreferrer" className="social-btn whatsapp" title="WhatsApp">
@@ -118,7 +122,7 @@ const Inicio = () => {
                     <div className="footer-links">
                         <a href="#">Términos y condiciones</a>
                         <a href="#">Política de privacidad</a>
-                        <a href="#">Contacto</a>
+                        <a href="https://wa.me/573223253844">Contacto</a>
                     </div>
                 </div>
             </footer>

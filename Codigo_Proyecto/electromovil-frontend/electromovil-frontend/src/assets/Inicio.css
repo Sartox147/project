@@ -44,11 +44,18 @@ nav {
 }
 
 .logo {
-  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
   font-weight: bold;
+  font-size: 1.7rem;
   text-decoration: none;
   color: #2c3e50;
-  font-weight: 1000;
+}
+
+.logo-img {
+  height: 38px;      /* Ajusta el tamaño según tu logo */
+  margin-right: 10px;
+  display: inline-block;
 }
 
 .nav-links {

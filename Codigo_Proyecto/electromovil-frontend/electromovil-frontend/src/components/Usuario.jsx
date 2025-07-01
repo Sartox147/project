@@ -76,10 +76,11 @@ const Usuario = () => {
 
 
   const handleUserActivity = () => resetInactivityTimer();
+  const [originalEmail, setOriginalEmail] = useState('');
 
   const fetchUserData = async () => {
     try {
-      const response = await api.get('/user');
+      const response = await api.get('/me');
       if (!response.data) throw new Error('Datos de usuario no recibidos');
 
       setUserData({
@@ -91,6 +92,7 @@ const Usuario = () => {
         password: '',
         password_confirmation: ''
       });
+       setOriginalEmail(response.data.email || '');
     } catch (error) {
       console.error('Error al cargar datos del usuario:', error);
       if (!checkAuthError(error)) {
