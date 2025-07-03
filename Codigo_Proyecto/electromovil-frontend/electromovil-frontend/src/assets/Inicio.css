@@ -38,9 +38,11 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;           /* Cambia de 90% a 100% */
+  max-width: none;       /* Elimina el max-width */
+  margin: 0;             /* Elimina el margen lateral */
+  padding-left: 2vw;     /* agrega un pequeño padding izquierdo */
+  padding-right: 2vw;    /*agrega un pequeño padding derecho */
 }
 
 .logo {
@@ -53,7 +55,7 @@ nav {
 }
 
 .logo-img {
-  height: 38px;      /* Ajusta el tamaño según tu logo */
+  height: 38px;      /* Ajusta el tamaño */
   margin-right: 10px;
   display: inline-block;
 }
