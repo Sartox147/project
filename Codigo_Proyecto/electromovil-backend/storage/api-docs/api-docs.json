@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Documentación de la API del Servicio Técnico",
+        "title": "Documentación de ElectroElite",
         "description": "API construida con Laravel y documentada con Swagger",
         "contact": {
             "name": "Soporte Técnico",

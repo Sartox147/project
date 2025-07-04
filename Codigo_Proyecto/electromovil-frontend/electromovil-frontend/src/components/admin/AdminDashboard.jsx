@@ -5,6 +5,7 @@ import { faMapMarkerAlt, faTasks, faFileAlt, faUser, faPhone, faEnvelope, faHome
 import '../../assets/admin.css';
 import { api } from '../../services/api';
 import { BiGroup, BiWrench, BiReceipt, BiBarChartAlt2 } from "react-icons/bi";
+import logoImg from '../../assets/img/logo.png';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -151,16 +152,16 @@ const AdminDashboard = () => {
       description: 'Gestiona los servicios ofrecidos por la empresa.'
     },
     //{
-     // path: 'invoices',
-      //icon: <BiReceipt />,
-      //title: 'Gestión de Facturas',
-      //description: 'Administra las facturas y transacciones de los clientes.'
+    // path: 'invoices',
+    //icon: <BiReceipt />,
+    //title: 'Gestión de Facturas',
+    //description: 'Administra las facturas y transacciones de los clientes.'
     //},
     //{
-      //path: 'reports',
-      //icon: <BiBarChartAlt2 />,
-      //title: 'Reportes',
-      //description: 'Genera reportes y estadísticas del sistema.'
+    //path: 'reports',
+    //icon: <BiBarChartAlt2 />,
+    //title: 'Reportes',
+    //description: 'Genera reportes y estadísticas del sistema.'
     //}
   ];
   if (loading) {
@@ -174,7 +175,10 @@ const AdminDashboard = () => {
   return (
     <div className="usuario-container">
       <header className="compact-header">
-        <h1 onClick={handleElectroMovilClick} style={{ cursor: 'pointer' }}>ElectroElite</h1>
+        <h1 className="admin-logo" onClick={handleElectroMovilClick} style={{ cursor: 'pointer' }}>
+          <img src={logoImg} alt="Logo ElectroElite" className="logo-img" />
+          <span className="logo-text">ElectroElite</span>
+        </h1>
         <div className="header-controls">
           <div className="controls-spacer"></div>
           <button

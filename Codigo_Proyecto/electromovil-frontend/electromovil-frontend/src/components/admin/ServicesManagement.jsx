@@ -12,6 +12,7 @@ const ServicesManagement = () => {
   const [currentService, setCurrentService] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: '', variant: 'success' });
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchServices();
@@ -24,12 +25,15 @@ const ServicesManagement = () => {
   }, [searchTerm, services]);
 
   const fetchServices = async () => {
+    setLoading(true);
     try {
       const response = await apiService.getServicios();
       setServices(response.data);
-      setFilteredServices(response.data); // Inicialmente, los servicios filtrados son todos los servicios
+      setFilteredServices(response.data);
     } catch (error) {
       showAlert('Error al cargar servicios', 'danger');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -154,7 +158,14 @@ const ServicesManagement = () => {
 
     setFilteredServices(filtered);
   };
-
+  if (loading) {
+    return (
+      <div className="custom-spinner-container">
+        <div className="custom-spinner"></div>
+        <div className="spinner-text">Cargando servicios...</div>
+      </div>
+    );
+  }
   return (
     <div className="p-4">
       {alert.show && <Alert variant={alert.variant}>{alert.message}</Alert>}
@@ -237,7 +248,7 @@ const ServicesManagement = () => {
                           Completado
                         </Dropdown.Item>
                         <Dropdown.Item
-                          active={service.estado === 'cancelado'} 
+                          active={service.estado === 'cancelado'}
                           onClick={() => handleStatusChange(service.id, 'cancelado')}
                         >
                           Cancelado

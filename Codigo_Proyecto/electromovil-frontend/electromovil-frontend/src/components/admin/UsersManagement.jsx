@@ -27,13 +27,18 @@ const UsersManagement = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+
 
   const fetchUsers = async () => {
+    setLoading(true);
     try {
-      const response = await api.get('/users'); // Ajusta según tu ruta
+      const response = await api.get('/users');
       setUsers(response.data);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -318,7 +323,14 @@ const UsersManagement = () => {
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+  if (loading) {
+    return (
+      <div className="custom-spinner-container">
+        <div className="custom-spinner"></div>
+        <div className="spinner-text">Cargando usuarios...</div>
+      </div>
+    );
+  }
   return (
     <div className="card p-4">
       <h2>Gestión de Usuarios</h2>

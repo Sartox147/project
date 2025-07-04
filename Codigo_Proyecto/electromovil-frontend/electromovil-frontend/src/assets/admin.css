@@ -184,12 +184,27 @@
     font-size: 1.2rem;
   }
 
-  .logo-img {
-    width: 100px;
-    height: 40px;
-    object-fit: contain;
-    /* Asegura que no se distorsione */
-  }
+.admin-logo {
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #232f3e;
+  margin: 0;
+  gap: 12px; /* Espacio entre logo y texto */
+}
+
+.logo-img {
+  height: 48px;
+  width: auto;
+  margin-right: 0;
+  display: inline-block;
+}
+
+.logo-text {
+  display: inline-block;
+  vertical-align: middle;
+}
 
   .form-group label {
     display: block;
@@ -214,4 +229,35 @@ body, #root {
 
 .footer {
   flex-shrink: 0;
+}
+
+/* Spinner styles */
+.custom-spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+   width: 100%;
+}
+
+.custom-spinner {
+  width: 56px;
+  height: 56px;
+  border: 6px solid #e0e0e0;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 18px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-text {
+  font-size: 1.15rem;
+  color: #007bff;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
