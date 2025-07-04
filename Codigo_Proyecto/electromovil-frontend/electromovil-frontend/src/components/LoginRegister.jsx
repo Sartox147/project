@@ -175,7 +175,11 @@ const LoginRegister = ({ onLoginSuccess }) => {
       navigate(redirectPath);
       onLoginSuccess?.(user);
     } catch (error) {
+<<<<<<< HEAD
       setErrors({ general: error.response?.data?.message || 'Error verifica tus datos ' });
+=======
+      setErrors({ general: error.response?.data?.message || 'Error al iniciar sesión' });
+>>>>>>> 92063e72443d434772eeccab41fc40c218086434
     } finally {
       setIsLoading(false);
     }
