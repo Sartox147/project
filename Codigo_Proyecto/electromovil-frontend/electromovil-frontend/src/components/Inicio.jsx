@@ -3,7 +3,7 @@ import '../assets/Inicio.css';
 import imagen1 from '../assets/img/imagen1.jpg';
 import imagen2 from '../assets/img/imagen2.webp';
 import imagen3 from '../assets/img/imagen3.jpg';
-import logoImg from '../assets/img/logo.png';
+import logoImg from '../assets/img/Logo.png';
 
 // Puedes usar react-icons para mejores íconos sociales
 import { FaFacebookF, FaInstagram, FaWhatsapp } from 'react-icons/fa';

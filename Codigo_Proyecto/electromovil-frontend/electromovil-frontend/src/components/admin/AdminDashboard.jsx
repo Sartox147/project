@@ -5,7 +5,7 @@ import { faMapMarkerAlt, faTasks, faFileAlt, faUser, faPhone, faEnvelope, faHome
 import '../../assets/admin.css';
 import { api } from '../../services/api';
 import { BiGroup, BiWrench, BiReceipt, BiBarChartAlt2 } from "react-icons/bi";
-import logoImg from '../../assets/img/logo.png';
+import logoImg from '../../assets/img/Logo.png';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
