@@ -12,7 +12,7 @@ import Descuento from '../assets/img/Descuento.webp';
 import logoImg from '../assets/img/Logo.png';
 
 const UserContext = React.createContext();
-const INACTIVITY_TIMEOUT = 1 * 60 * 1000;
+const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 
 const Usuario = () => {
   const navigate = useNavigate();
@@ -53,6 +53,7 @@ const Usuario = () => {
   const [selectedAppliance, setSelectedAppliance] = useState(null);
   const [serviceDescription, setServiceDescription] = useState('');
   const inactivityTimerRef = useRef(null);
+  const [originalProfileData, setOriginalProfileData] = useState({});
 
   const checkAuthError = (error) => {
     if (error.response && (error.response.status === 401 || error.response.status === 419)) {
@@ -164,9 +165,65 @@ const Usuario = () => {
     };
   }, []);
 
+  const validateProfileField = (name, value, allValues = {}) => {
+    let error = '';
+
+    // Validar si el campo está vacío
+    if (!value || value.trim() === '') {
+      return 'Este campo es obligatorio';
+    }
+
+    // Validaciones específicas por campo
+    if (name === 'name') {
+      if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+        error = 'El nombre solo debe contener letras';
+      }
+    }
+
+    if (name === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        error = 'Correo electrónico no válido';
+      }
+    }
+
+    if (name === 'phone') {
+      if (!/^\d{7,10}$/.test(value)) {
+        error = 'El teléfono debe tener entre 7 y 10 dígitos';
+      }
+    }
+
+    if (name === 'address') {
+      if (value.trim().length < 5) {
+        error = 'La dirección debe tener al menos 5 caracteres';
+      }
+    }
+
+    if (name === 'password') {
+      if (value.length < 8) {
+        error = 'La contraseña debe tener al menos 8 caracteres';
+      }
+    }
+
+    if (name === 'password_confirmation') {
+      if (value !== allValues.password) {
+        error = 'Las contraseñas no coinciden';
+      }
+    }
+
+    return error;
+  };
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUserData(prev => ({ ...prev, [name]: value }));
+    setUserData(prev => {
+      const updated = { ...prev, [name]: value };
+      // Validación en tiempo real
+      const error = validateProfileField(name, value, updated);
+      setErrors(prevErr => ({ ...prevErr, [name]: error }));
+      return updated;
+    });
   };
 
   const handleServiceInputChange = (e) => {
@@ -324,7 +381,10 @@ const Usuario = () => {
           </div>
           <div className="header-controls">
             <div className="controls-spacer"></div>
-            <button className="profile-btn" onClick={() => setShowProfileModal(true)}>
+            <button className="profile-btn" onClick={() => {
+              setOriginalProfileData(userData);
+              setShowProfileModal(true);
+            }}>
               <FaUser className="icon" />
               <span>Perfil</span>
             </button>
@@ -626,10 +686,18 @@ const Usuario = () => {
                 {errors.general && (
                   <div className="alert alert-danger">
                     {errors.general}
-                    <button onClick={() => setErrors(prev => ({ ...prev, general: '' }))}>×</button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserData(originalProfileData);
+                        setShowProfileModal(false);
+                        setErrors(prev => ({ ...prev, general: '' }));
+                      }}
+                    >
+                      ×
+                    </button>
                   </div>
                 )}
-
                 {['name', 'email', 'phone', 'address'].map(field => (
                   <div key={field} className="form-group">
                     <label>{{
@@ -650,7 +718,11 @@ const Usuario = () => {
                       onChange={handleInputChange}
                       className={errors[field] ? 'is-invalid' : ''}
                     />
-                    {errors[field] && <div className="invalid-feedback">{errors[field][0]}</div>}
+                    {errors[field] && (
+                      <div className="invalid-feedback">
+                        {Array.isArray(errors[field]) ? errors[field][0] : errors[field]}
+                      </div>
+                    )}
                   </div>
                 ))}
 
@@ -683,7 +755,16 @@ const Usuario = () => {
                 </div>
 
                 <div className="form-actions">
-                  <button type="button" className="cancel-btn" onClick={() => setShowProfileModal(false)} disabled={isLoading}>
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => {
+                      setUserData(originalProfileData);
+                      setShowProfileModal(false);
+                      setErrors({});
+                    }}
+                    disabled={isLoading}
+                  >
                     Cancelar
                   </button>
                   <button type="submit" className="save-btn" disabled={isLoading}>
