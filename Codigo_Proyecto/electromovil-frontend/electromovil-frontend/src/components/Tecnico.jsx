@@ -9,6 +9,7 @@ import {
 import '../assets/Tecnico.css';
 import { api } from '../services/api';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
+import logoImg from '../assets/img/Logo.png';
 
 const Tecnico = () => {
   const navigate = useNavigate();
@@ -242,7 +243,10 @@ const Tecnico = () => {
     <div className="technician-container">
       {/* Header compacto */}
       <header className="compact-header">
-        <h1>ElectroElite</h1>
+        <div className="logo-area">
+          <img src={logoImg} alt="Logo ElectroElite" className="logo-img" />
+          <span className="logo-text">ElectroElite</span>
+        </div>
         <div className="header-controls">
           <div className="availability-container">
             <div

@@ -13,6 +13,8 @@ const ServicesManagement = () => {
   const [alert, setAlert] = useState({ show: false, message: '', variant: 'success' });
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
   useEffect(() => {
     fetchServices();
@@ -22,6 +24,7 @@ const ServicesManagement = () => {
 
   useEffect(() => {
     filterServices(searchTerm);
+    setCurrentPage(1);
   }, [searchTerm, services]);
 
   const fetchServices = async () => {
@@ -166,6 +169,11 @@ const ServicesManagement = () => {
       </div>
     );
   }
+  const totalPages = Math.ceil(filteredServices.length / pageSize);
+  const paginatedServices = filteredServices.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
   return (
     <div className="p-4">
       {alert.show && <Alert variant={alert.variant}>{alert.message}</Alert>}
@@ -203,12 +211,12 @@ const ServicesManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredServices.length === 0 ? (
+          {paginatedServices.length === 0 ? (
             <tr>
               <td colSpan="9" className="text-center">No se encontraron servicios.</td>
             </tr>
           ) : (
-            filteredServices.map(service => (
+            paginatedServices.map(service => (
               <tr key={service.id}>
                 <td>{service.id}</td>
                 <td>{service.tipo_equipo}</td>
@@ -262,6 +270,29 @@ const ServicesManagement = () => {
           )}
         </tbody>
       </Table>
+
+      {/* Controles de paginación */}
+      <div className="pagination-controls d-flex justify-content-center align-items-center my-3">
+        <Button
+          variant="secondary"
+          size="sm"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className="me-2"
+        >
+          Anterior
+        </Button>
+        <span>Página {currentPage} de {totalPages}</span>
+        <Button
+          variant="secondary"
+          size="sm"
+          disabled={currentPage === totalPages || totalPages === 0}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className="ms-2"
+        >
+          Siguiente
+        </Button>
+      </div>
 
       {/* Modal para crear/editar servicio */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">

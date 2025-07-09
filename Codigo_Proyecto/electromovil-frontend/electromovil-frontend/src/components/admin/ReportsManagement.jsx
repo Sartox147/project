@@ -9,32 +9,68 @@ const ReportsManagement = () => {
   const [currentReport, setCurrentReport] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: '', variant: 'success' });
   const [chartData, setChartData] = useState([]);
+  const [servicesByMonth, setServicesByMonth] = useState([]);
+  const [usersByMonth, setUsersByMonth] = useState([]);
+  const [servicesByStatus, setServicesByStatus] = useState([]);
 
   useEffect(() => {
     fetchReports();
-    generateChartData();
+    //generateChartData();
+    fetchServicesByMonth();
+    fetchUsersByMonth();
+    fetchServicesByStatus();
   }, []);
 
-  const fetchReports = async () => {
+  const fetchServicesByMonth = async () => {
     try {
-      const response = await getReports();
-      setReports(response.data);
+      // Simulación, reemplazar por endpoint real
+      // const response = await api.get('/reports/services-by-month');
+      // setServicesByMonth(response.data);
+      setServicesByMonth([
+        { mes: 'Ene', cantidad: 12 },
+        { mes: 'Feb', cantidad: 19 },
+        { mes: 'Mar', cantidad: 15 },
+        { mes: 'Abr', cantidad: 22 },
+        { mes: 'May', cantidad: 18 },
+        { mes: 'Jun', cantidad: 25 },
+      ]);
     } catch (error) {
-      showAlert('Error al cargar reportes', 'danger');
+      showAlert('Error al cargar servicios por mes', 'danger');
     }
   };
 
-  const generateChartData = () => {
-    // Datos de ejemplo para el gráfico
-    const data = [
-      { name: 'Ene', servicios: 12, facturas: 8 },
-      { name: 'Feb', servicios: 19, facturas: 12 },
-      { name: 'Mar', servicios: 15, facturas: 9 },
-      { name: 'Abr', servicios: 22, facturas: 16 },
-      { name: 'May', servicios: 18, facturas: 11 },
-      { name: 'Jun', servicios: 25, facturas: 19 },
-    ];
-    setChartData(data);
+  const fetchUsersByMonth = async () => {
+    try {
+      // Simulación, reemplazar por endpoint real
+      // const response = await api.get('/reports/users-by-month');
+      // setUsersByMonth(response.data);
+      setUsersByMonth([
+        { mes: 'Ene', cantidad: 5 },
+        { mes: 'Feb', cantidad: 8 },
+        { mes: 'Mar', cantidad: 6 },
+        { mes: 'Abr', cantidad: 10 },
+        { mes: 'May', cantidad: 7 },
+        { mes: 'Jun', cantidad: 12 },
+      ]);
+    } catch (error) {
+      showAlert('Error al cargar usuarios por mes', 'danger');
+    }
+  };
+
+  const fetchServicesByStatus = async () => {
+    try {
+      // Simulación, reemplazar por endpoint real
+      // const response = await api.get('/reports/services-by-status');
+      // setServicesByStatus(response.data);
+      setServicesByStatus([
+        { estado: 'pendiente', cantidad: 8 },
+        { estado: 'en_proceso', cantidad: 12 },
+        { estado: 'completado', cantidad: 20 },
+        { estado: 'cancelado', cantidad: 3 },
+      ]);
+    } catch (error) {
+      showAlert('Error al cargar servicios por estado', 'danger');
+    }
   };
 
   const handleEdit = (report) => {
@@ -49,6 +85,14 @@ const ReportsManagement = () => {
       showAlert('Reporte eliminado correctamente', 'success');
     } catch (error) {
       showAlert('Error al eliminar reporte', 'danger');
+    }
+  };
+  const fetchReports = async () => {
+    try {
+      const response = await getReports();
+      setReports(response.data);
+    } catch (error) {
+      showAlert('Error al cargar reportes', 'danger');
     }
   };
 
@@ -76,7 +120,7 @@ const ReportsManagement = () => {
   return (
     <div className="p-4">
       {alert.show && <Alert variant={alert.variant}>{alert.message}</Alert>}
-      
+
       <div className="d-flex justify-content-between mb-4">
         <h2>Gestión de Reportes</h2>
         <Button variant="primary" onClick={() => { setCurrentReport({ type: 'services' }); setShowModal(true); }}>
@@ -105,6 +149,65 @@ const ReportsManagement = () => {
             </Card.Body>
           </Card>
         </Col>
+        <Row className="mb-4">
+          <Col md={6}>
+            <Card>
+              <Card.Body>
+                <Card.Title>Servicios Solicitados por Mes</Card.Title>
+                <div style={{ height: '250px' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={servicesByMonth}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="mes" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="cantidad" fill="#8884d8" name="Servicios" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card>
+              <Card.Body>
+                <Card.Title>Usuarios Registrados por Mes</Card.Title>
+                <div style={{ height: '250px' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={usersByMonth}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="mes" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="cantidad" fill="#82ca9d" name="Usuarios" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row className="mb-4">
+          <Col md={12}>
+            <Card>
+              <Card.Body>
+                <Card.Title>Servicios por Estado</Card.Title>
+                <div style={{ height: '250px' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={servicesByStatus}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="estado" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="cantidad" fill="#ffc658" name="Servicios" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       </Row>
 
       <Table striped bordered hover responsive>
@@ -128,11 +231,39 @@ const ReportsManagement = () => {
               <td>{new Date(report.createdAt).toLocaleDateString()}</td>
               <td>
                 <Button variant="info" size="sm" onClick={() => handleEdit(report)}>Editar</Button>
-                <Button variant="success" size="sm" onClick={() => window.open(`/api/reports/${report.id}/download`, '_blank')} className="ms-2">
+                <Button
+                  variant="success"
+                  size="sm"
+                  onClick={() => window.open(`/api/reports/${report.id}/download`, '_blank')}
+                  className="ms-2"
+                >
                   Descargar
                 </Button>
-                <Button variant="danger" size="sm" onClick={() => handleDelete(report.id)} className="ms-2">
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => handleDelete(report.id)}
+                  className="ms-2"
+                >
                   Eliminar
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  className="ms-2"
+                  title="Descargar PDF"
+                  onClick={() => window.open(`/api/reports/${report.id}/download?format=pdf`, '_blank')}
+                >
+                  PDF
+                </Button>
+                <Button
+                  variant="outline-success"
+                  size="sm"
+                  className="ms-2"
+                  title="Descargar Excel"
+                  onClick={() => window.open(`/api/reports/${report.id}/download?format=excel`, '_blank')}
+                >
+                  Excel
                 </Button>
               </td>
             </tr>

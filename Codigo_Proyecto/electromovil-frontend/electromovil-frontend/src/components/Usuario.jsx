@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { FaUser, FaPlus, FaEdit, FaSnowflake, FaTshirt, FaTrash, FaTools, FaCalendarAlt, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
@@ -9,9 +9,10 @@ import Soporte from '../assets/img/soporte.jpg';
 import Garantia from '../assets/img/Garantia.webp';
 import Tecnico from '../assets/img/Tecnico.jpg';
 import Descuento from '../assets/img/Descuento.webp';
+import logoImg from '../assets/img/Logo.png';
 
 const UserContext = React.createContext();
-const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
+const INACTIVITY_TIMEOUT = 1 * 60 * 1000;
 
 const Usuario = () => {
   const navigate = useNavigate();
@@ -48,6 +49,10 @@ const Usuario = () => {
   });
   const [showApplianceForm, setShowApplianceForm] = useState(false);
   const [inactivityTimer, setInactivityTimer] = useState(null);
+  const [showServiceModal, setShowServiceModal] = useState(false);
+  const [selectedAppliance, setSelectedAppliance] = useState(null);
+  const [serviceDescription, setServiceDescription] = useState('');
+  const inactivityTimerRef = useRef(null);
 
   const checkAuthError = (error) => {
     if (error.response && (error.response.status === 401 || error.response.status === 419)) {
@@ -63,14 +68,15 @@ const Usuario = () => {
   });
 
   const resetInactivityTimer = () => {
-    if (inactivityTimer) clearTimeout(inactivityTimer);
+    if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
 
-    // Solo poner el timer si el usuario está activo / logueado
     if (userIsLoggedIn) {
-      setInactivityTimer(setTimeout(() => {
-        handleLogout();
-        alert('Has sido desconectado por inactividad');
-      }, INACTIVITY_TIMEOUT));
+      inactivityTimerRef.current = setTimeout(() => {
+        if (userIsLoggedIn) { // Solo si sigue logueado
+          handleLogout();
+          alert('Has sido desconectado por inactividad');
+        }
+      }, INACTIVITY_TIMEOUT);
     }
   };
 
@@ -92,7 +98,7 @@ const Usuario = () => {
         password: '',
         password_confirmation: ''
       });
-       setOriginalEmail(response.data.email || '');
+      setOriginalEmail(response.data.email || '');
     } catch (error) {
       console.error('Error al cargar datos del usuario:', error);
       if (!checkAuthError(error)) {
@@ -103,13 +109,16 @@ const Usuario = () => {
 
   const handleLogout = async () => {
     try {
-      if (inactivityTimer) clearTimeout(inactivityTimer);
-      setInactivityTimer(null);
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
+
+      // Limpia listeners de actividad
+      const events = ['mousemove', 'keydown', 'click', 'scroll'];
+      events.forEach(e => window.removeEventListener(e, handleUserActivity));
+
       await api.post('/logout');
       localStorage.removeItem('auth_token');
       navigate('/LoginRegister', { state: { logoutSuccess: true } });
     } catch (error) {
-      console.error('Error al cerrar sesión:', error);
       localStorage.removeItem('auth_token');
       navigate('/LoginRegister');
     }
@@ -149,10 +158,9 @@ const Usuario = () => {
     events.forEach(e => window.addEventListener(e, handleUserActivity));
     resetInactivityTimer();
     fetchData();
-
     return () => {
-      clearTimeout(inactivityTimer);
-      events.forEach(e => window.removeEventListener(e, handleUserActivity));
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
+
     };
   }, []);
 
@@ -310,7 +318,10 @@ const Usuario = () => {
     <UserContext.Provider value={{ userData, fetchUserData }}>
       <div className="usuario-container">
         <header className="compact-header">
-          <h1>ElectroElite</h1>
+          <div className="logo-area">
+            <img src={logoImg} alt="Logo ElectroElite" className="logo-img" />
+            <span className="logo-text">ElectroElite</span>
+          </div>
           <div className="header-controls">
             <div className="controls-spacer"></div>
             <button className="profile-btn" onClick={() => setShowProfileModal(true)}>
@@ -552,6 +563,16 @@ const Usuario = () => {
                       </>
                     )}
                   </div>
+                  <button
+                    className="solicitar-servicio-btn"
+                    onClick={() => {
+                      setSelectedAppliance(appliance);
+                      setShowServiceModal(true);
+                      setServiceDescription('');
+                    }}
+                  >
+                    Solicitar servicio
+                  </button>
                 </div>
               ))
             ) : (
@@ -685,6 +706,54 @@ const Usuario = () => {
           </div>
         </footer>
       </div>
+      {showServiceModal && selectedAppliance && (
+        <div className="modal-overlay show">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Solicitar Servicio para {selectedAppliance.type} {selectedAppliance.brand}</h3>
+              <button onClick={() => setShowServiceModal(false)}>×</button>
+            </div>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  await api.post('/servicios', {
+                    tipo_equipo: selectedAppliance.type,
+                    marca: selectedAppliance.brand,
+                    modelo: selectedAppliance.model,
+                    descripcion_problema: serviceDescription,
+                    fecha_solicitud: new Date().toISOString().split('T')[0]
+                  });
+                  alert('Servicio técnico solicitado con éxito');
+                  setShowServiceModal(false);
+                  setServiceDescription('');
+                } catch (error) {
+                  alert('Error al solicitar servicio');
+                }
+              }}
+            >
+              <div className="form-group">
+                <label>Descripción del problema</label>
+                <textarea
+                  value={serviceDescription}
+                  onChange={e => setServiceDescription(e.target.value)}
+                  required
+                  placeholder="Describe el problema o lo que necesitas"
+                  rows={4}
+                />
+              </div>
+              <div className="form-actions">
+                <button type="button" className="cancel-btn" onClick={() => setShowServiceModal(false)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="save-btn">
+                  Solicitar Servicio
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </UserContext.Provider>
   );
 };

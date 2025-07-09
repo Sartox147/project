@@ -230,6 +230,9 @@ body, #root {
 .footer {
   flex-shrink: 0;
 }
+.pagination-controls {
+  gap: 10px;
+}
 
 /* Spinner styles */
 .custom-spinner-container {
