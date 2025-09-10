@@ -203,13 +203,6 @@
   .dashboard-card h3 {
     font-size: 1.2rem;
   }
-<<<<<<< HEAD:Codigo_Proyecto/electromovil-frontend/src/styles/admin.css
-<<<<<<< Updated upstream:Codigo_Proyecto/electromovil-frontend/src/styles/admin.css
-  
-=======
-=======
->>>>>>> 92063e72443d434772eeccab41fc40c218086434:Codigo_Proyecto/electromovil-frontend/electromovil-frontend/src/assets/admin.css
-
   .logo-img {
     width: 100px;
     height: 40px;
@@ -223,8 +216,6 @@
     font-weight: 500;
     color: var(--primary-color);
   }
-<<<<<<< HEAD:Codigo_Proyecto/electromovil-frontend/src/styles/admin.css
-}
 /* --- Nuevo diseño profesional para Services Management --- */
 
 .services-management-container {
@@ -444,7 +435,6 @@ body, #root {
 
 .footer {
   flex-shrink: 0;
->>>>>>> Stashed changes:Codigo_Proyecto/electromovil-frontend/electromovil-frontend/src/assets/admin.css
-=======
->>>>>>> 92063e72443d434772eeccab41fc40c218086434:Codigo_Proyecto/electromovil-frontend/electromovil-frontend/src/assets/admin.css
+ 
+}
 }
