@@ -397,6 +397,7 @@ const UsersManagement = () => {
           </tbody>
         </table>
       </div>
+      
       {/* Paginación */}
       <div className="pagination-controls d-flex justify-content-center align-items-center my-3">
         <Button

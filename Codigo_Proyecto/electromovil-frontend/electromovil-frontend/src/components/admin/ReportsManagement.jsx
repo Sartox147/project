@@ -120,7 +120,6 @@ const ReportsManagement = () => {
   return (
     <div className="p-4">
       {alert.show && <Alert variant={alert.variant}>{alert.message}</Alert>}
-
       <div className="d-flex justify-content-between mb-4">
         <h2>Gestión de Reportes</h2>
         <Button variant="primary" onClick={() => { setCurrentReport({ type: 'services' }); setShowModal(true); }}>

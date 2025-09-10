@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="images/logo.png" alt="ElectroMóvil Logo" width="300">
+  <img src="images/logo (2).png" alt="ElectroMóvil Logo" width="300">
 </div>
 
 # 🛠️ Sistema De Gestión De Servicios Técnicos 🏠  
-### **ElectroMóvil** ⚡🔧  
+### **ElectroElite** ⚡🔧  
 
 ---
 

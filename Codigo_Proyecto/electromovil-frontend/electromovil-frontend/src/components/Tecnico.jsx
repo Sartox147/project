@@ -188,7 +188,6 @@ const Tecnico = () => {
   // Función para actualizar perfil
   const actualizarPerfil = async (e) => {
     e.preventDefault();
-
     const newErrors = {};
     for (const [key, value] of Object.entries(profile)) {
       const error = validateField(key, value);
@@ -283,7 +282,6 @@ const Tecnico = () => {
 
     return error;
   };
-
   // Función para manejar cambio en inputs de perfil
   const handleProfileChange = (e) => {
     const { name, value } = e.target;

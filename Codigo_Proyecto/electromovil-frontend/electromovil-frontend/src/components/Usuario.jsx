@@ -115,7 +115,6 @@ const Usuario = () => {
       // Limpia listeners de actividad
       const events = ['mousemove', 'keydown', 'click', 'scroll'];
       events.forEach(e => window.removeEventListener(e, handleUserActivity));
-
       await api.post('/logout');
       localStorage.removeItem('auth_token');
       navigate('/LoginRegister', { state: { logoutSuccess: true } });

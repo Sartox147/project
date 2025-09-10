@@ -132,7 +132,6 @@ const AdminDashboard = () => {
       navigate('/login-register', { replace: true });
     }
   };
-
   const handleElectroMovilClick = () => {
     navigate('/admin');
   };
@@ -213,7 +212,6 @@ const AdminDashboard = () => {
               <Outlet />
             </div>
           </div>
-
         )}
       </div>
 
