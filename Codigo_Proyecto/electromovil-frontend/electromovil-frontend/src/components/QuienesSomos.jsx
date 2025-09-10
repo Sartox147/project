@@ -133,7 +133,6 @@ const QuienesSomos = () => {
                     </div>
                 </section>
             </main>
-
             <footer className="qs-footer">
                 <div>
                     <p>&copy; {new Date().getFullYear()} ElectroElite. Todos los derechos reservados.</p>

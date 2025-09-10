@@ -270,7 +270,7 @@ const ServicesManagement = () => {
           )}
         </tbody>
       </Table>
-
+      
       {/* Controles de paginación */}
       <div className="pagination-controls d-flex justify-content-center align-items-center my-3">
         <Button
@@ -293,7 +293,6 @@ const ServicesManagement = () => {
           Siguiente
         </Button>
       </div>
-
       {/* Modal para crear/editar servicio */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
         <Modal.Header closeButton>
