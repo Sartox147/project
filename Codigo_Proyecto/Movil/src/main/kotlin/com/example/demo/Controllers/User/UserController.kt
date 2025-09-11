@@ -1,4 +1,4 @@
-package com.example.demo.Controllers.Users
+package com.example.demo.Controllers.User
 
 import com.example.demo.Models.User.UserModel
 import com.example.demo.Services.User.UserService
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.ResponseEntity
+
 
 @RestController
 class UserController {
@@ -19,25 +21,31 @@ class UserController {
 
     @GetMapping("/users")
     fun users(): List<String> {
-        return UserService.Userlist1()
+        return UserService.list1()
+    }
+
+    @GetMapping("/users/{id}")
+    fun search(@PathVariable id: Int): List<String> {
+        return UserService.list3(id)
     }
 
     @PostMapping("/users")
     fun user(@RequestBody user: UserModel): UserModel {
-        return UserService.Userlist2(user)
-    }
-
-    @GetMapping("/users/{id}")
-    fun Usersearch(@PathVariable id: Int): List<String> {
-        return UserService.Userlist3(id)
+        return UserService.list2(user)
     }
     @PutMapping("/users/{id}")
-    fun Userupdate(@PathVariable id: Int, @RequestBody user: UserModel): UserModel {
-        return UserService.Userlist4(id, user)
+    fun update(@PathVariable id: Int, @RequestBody user: UserModel): ResponseEntity<Any> {
+        val actualizado = UserService.list4(id, user)
+
+        return if (actualizado != null) {
+            ResponseEntity.ok(actualizado)
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
     @DeleteMapping("/users/{id}")
-    fun Userdelete(@PathVariable id: Int): String {
-        return if (UserService.Userlist5(id)){
+    fun delete(@PathVariable id: Int): String {
+        return if (UserService.list5(id)){
             "Usuario eliminado $id correctamente "
         } else {
             "Usuario con id $id no encontrado"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Form, Modal, Alert, Badge } from 'react-bootstrap';
+import { Table, Button, Form, Modal, Alert, Badge, Dropdown } from 'react-bootstrap';
 import apiService, { api } from '../../services/api.js'; // solo necesitas esta línea
+import { FaEdit, FaExchangeAlt } from "react-icons/fa";
 
 const ServicesManagement = () => {
   const [services, setServices] = useState([]);
@@ -11,6 +12,9 @@ const ServicesManagement = () => {
   const [currentService, setCurrentService] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: '', variant: 'success' });
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
   useEffect(() => {
     fetchServices();
@@ -20,15 +24,19 @@ const ServicesManagement = () => {
 
   useEffect(() => {
     filterServices(searchTerm);
+    setCurrentPage(1);
   }, [searchTerm, services]);
 
   const fetchServices = async () => {
+    setLoading(true);
     try {
       const response = await apiService.getServicios();
       setServices(response.data);
-      setFilteredServices(response.data); // Inicialmente, los servicios filtrados son todos los servicios
+      setFilteredServices(response.data);
     } catch (error) {
       showAlert('Error al cargar servicios', 'danger');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -153,7 +161,19 @@ const ServicesManagement = () => {
 
     setFilteredServices(filtered);
   };
-
+  if (loading) {
+    return (
+      <div className="custom-spinner-container">
+        <div className="custom-spinner"></div>
+        <div className="spinner-text">Cargando servicios...</div>
+      </div>
+    );
+  }
+  const totalPages = Math.ceil(filteredServices.length / pageSize);
+  const paginatedServices = filteredServices.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
   return (
     <div className="p-4">
       {alert.show && <Alert variant={alert.variant}>{alert.message}</Alert>}
@@ -191,12 +211,12 @@ const ServicesManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredServices.length === 0 ? (
+          {paginatedServices.length === 0 ? (
             <tr>
               <td colSpan="9" className="text-center">No se encontraron servicios.</td>
             </tr>
           ) : (
-            filteredServices.map(service => (
+            paginatedServices.map(service => (
               <tr key={service.id}>
                 <td>{service.id}</td>
                 <td>{service.tipo_equipo}</td>
@@ -207,32 +227,42 @@ const ServicesManagement = () => {
                 <td>{getStatusBadge(service.estado)}</td>
                 <td>{service.fecha_solicitud}</td>
                 <td>
-                  <Button variant="info" size="sm" onClick={() => handleEdit(service)}>Editar</Button>
-                  <div className="btn-group ms-2">
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={() => handleStatusChange(service.id, 'pendiente')}
-                      active={service.estado === 'pendiente'}
-                    >
-                      Pendiente
+                  <div className="services-actions">
+                    <Button variant="info" size="sm" onClick={() => handleEdit(service)}>
+                      <FaEdit style={{ marginRight: 4 }} /> Editar
                     </Button>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={() => handleStatusChange(service.id, 'en_proceso')}
-                      active={service.estado === 'en_proceso'}
-                    >
-                      En Proceso
-                    </Button>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={() => handleStatusChange(service.id, 'completado')}
-                      active={service.estado === 'completado'}
-                    >
-                      Completado
-                    </Button>
+                    <Dropdown>
+                      <Dropdown.Toggle variant="outline-primary" size="sm" id={`dropdown-status-${service.id}`}>
+                        <FaExchangeAlt style={{ marginRight: 4 }} />
+                        Cambiar estado
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        <Dropdown.Item
+                          active={service.estado === 'pendiente'}
+                          onClick={() => handleStatusChange(service.id, 'pendiente')}
+                        >
+                          Pendiente
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          active={service.estado === 'en_proceso'}
+                          onClick={() => handleStatusChange(service.id, 'en_proceso')}
+                        >
+                          En Proceso
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          active={service.estado === 'completado'}
+                          onClick={() => handleStatusChange(service.id, 'completado')}
+                        >
+                          Completado
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          active={service.estado === 'cancelado'}
+                          onClick={() => handleStatusChange(service.id, 'cancelado')}
+                        >
+                          Cancelado
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </div>
                 </td>
               </tr>
@@ -240,7 +270,29 @@ const ServicesManagement = () => {
           )}
         </tbody>
       </Table>
-
+      
+      {/* Controles de paginación */}
+      <div className="pagination-controls d-flex justify-content-center align-items-center my-3">
+        <Button
+          variant="secondary"
+          size="sm"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className="me-2"
+        >
+          Anterior
+        </Button>
+        <span>Página {currentPage} de {totalPages}</span>
+        <Button
+          variant="secondary"
+          size="sm"
+          disabled={currentPage === totalPages || totalPages === 0}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className="ms-2"
+        >
+          Siguiente
+        </Button>
+      </div>
       {/* Modal para crear/editar servicio */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
         <Modal.Header closeButton>

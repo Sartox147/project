@@ -1,10 +1,10 @@
 package com.example.demo.Models.User
 
-data class UserModel (
-    var id: Int? = null,
-    var name :String? = null,
-    var email  : String? = null,
-    var password : String? = null,
-    var phone : String? = null,
-    var address : String? = null,
+data class UserModel(
+    val id: Int? = null,
+    val name: String? = null,
+    val email: String? = null,
+    val password: String? = null,
+    val phone: String? = null,
+    val address: String? = null
 )

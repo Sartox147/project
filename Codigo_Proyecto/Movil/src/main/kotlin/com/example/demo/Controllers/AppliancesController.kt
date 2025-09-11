@@ -18,25 +18,25 @@ class AppliancesController {
     lateinit var AppliancesService: AppliancesService
 
     @GetMapping("/appliances")
-    fun AppliancesSerch(): List<String> {
-        return AppliancesService.Appliancelist1()
+    fun appliances(): List<String> {
+        return AppliancesService.list1()
     }
     @GetMapping("/appliances/{id}")
-    fun AppliancesSearchId(@PathVariable id: Int): List<String> {
-        return AppliancesService.Appliancelist3(id)
+    fun search(@PathVariable id: Int): List<String> {
+        return AppliancesService.list3(id)
     }
 
     @PostMapping("/appliances")
-    fun Appliance(@RequestBody appliance: AppliancesModel): AppliancesModel {
-        return AppliancesService.Appliancelist2(appliance)
+    fun appliance(@RequestBody appliance: AppliancesModel): AppliancesModel {
+        return AppliancesService.list2(appliance)
     }
     @PutMapping("/appliances/{id}")
-    fun Applianceupdate(@PathVariable id: Int, @RequestBody appliance: AppliancesModel): AppliancesModel {
-        return AppliancesService.Appliancelist4(id, appliance)
+    fun update(@PathVariable id: Int, @RequestBody appliance: AppliancesModel): AppliancesModel {
+        return AppliancesService.list4(id, appliance)
     }
     @DeleteMapping("/appliances/{id}")
-    fun Appliancedelete(@PathVariable id: Int): String {
-        return if (AppliancesService.Appliancelist5(id)){
+    fun delete(@PathVariable id: Int): String {
+        return if (AppliancesService.list5(id)){
             "Electrodomestico eliminado $id correctamente "
         } else {
             "Electrodomestico con id $id no encontrado"
