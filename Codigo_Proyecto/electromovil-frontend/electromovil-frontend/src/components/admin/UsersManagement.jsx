@@ -27,13 +27,20 @@ const UsersManagement = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; //cantidad de usuarios por página
+
 
   const fetchUsers = async () => {
+    setLoading(true);
     try {
-      const response = await api.get('/users'); // Ajusta según tu ruta
+      const response = await api.get('/users');
       setUsers(response.data);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -318,7 +325,19 @@ const UsersManagement = () => {
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+  if (loading) {
+    return (
+      <div className="custom-spinner-container">
+        <div className="custom-spinner"></div>
+        <div className="spinner-text">Cargando usuarios...</div>
+      </div>
+    );
+  }
+  const totalPages = Math.ceil(filteredUsers.length / pageSize);
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
   return (
     <div className="card p-4">
       <h2>Gestión de Usuarios</h2>
@@ -329,7 +348,7 @@ const UsersManagement = () => {
           className={`form-control ${addErrors.name ? 'is-invalid' : ''}`}
           placeholder="Buscar por nombre, correo o rol"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
         />
       </div>
 
@@ -353,12 +372,12 @@ const UsersManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.length === 0 ? (
+            {paginatedUsers.length === 0 ? (
               <tr>
                 <td colSpan="7" className="text-center">No hay usuarios registrados.</td>
               </tr>
             ) : (
-              filteredUsers.map((user, index) => (
+              paginatedUsers.map((user, index) => (
                 <tr key={user.id}>
                   <td>{index + 1}</td>
                   <td>{user.name}</td>
@@ -377,6 +396,29 @@ const UsersManagement = () => {
             )}
           </tbody>
         </table>
+      </div>
+      
+      {/* Paginación */}
+      <div className="pagination-controls d-flex justify-content-center align-items-center my-3">
+        <Button
+          variant="secondary"
+          size="sm"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className="me-2"
+        >
+          Anterior
+        </Button>
+        <span>Página {currentPage} de {totalPages}</span>
+        <Button
+          variant="secondary"
+          size="sm"
+          disabled={currentPage === totalPages || totalPages === 0}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className="ms-2"
+        >
+          Siguiente
+        </Button>
       </div>
 
       {/* Modal para añadir usuario */}

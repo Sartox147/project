@@ -9,6 +9,7 @@ import {
 import '../assets/Tecnico.css';
 import { api } from '../services/api';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
+import logoImg from '../assets/img/Logo.png';
 
 const Tecnico = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const Tecnico = () => {
   const [loading, setLoading] = useState(true);
   const [tipoReporteSeleccionado, setTipoReporteSeleccionado] = useState('');
   const [showEstados, setShowEstados] = useState(false);
+  const [errors, setErrors] = useState({});
 
   // Estado para almacenar los datos del perfil del técnico
   const [profile, setProfile] = useState({
@@ -119,7 +121,7 @@ const Tecnico = () => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('auth_token');
       localStorage.removeItem('userData');
       navigate('/login-register', { replace: true });
     }
@@ -186,7 +188,16 @@ const Tecnico = () => {
   // Función para actualizar perfil
   const actualizarPerfil = async (e) => {
     e.preventDefault();
-    if (!profile.id) {
+    const newErrors = {};
+    for (const [key, value] of Object.entries(profile)) {
+      const error = validateField(key, value);
+      if (error) newErrors[key] = error;
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    } else if (!profile.id) {
       alert('No se encontró información del usuario. Por favor, vuelve a iniciar sesión.');
       return;
     }
@@ -224,10 +235,62 @@ const Tecnico = () => {
       console.error(error);
     }
   };
+
+  //validación de campos del perfil
+
+  const validateField = (name, value) => {
+    let error = '';
+
+    if (!value.trim()) {
+      return 'Este campo es obligatorio';
+    }
+
+    switch (name) {
+      case 'name':
+        if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value)) {
+          error = 'El nombre solo debe contener letras';
+        }
+        break;
+      case 'email':
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          error = 'Correo electrónico no válido';
+        }
+        break;
+      case 'phone':
+        if (!/^\d{7,10}$/.test(value)) {
+          error = 'Debe tener entre 7 y 10 dígitos';
+        }
+        break;
+      case 'address':
+        if (value.trim().length < 5) {
+          error = 'La dirección debe tener al menos 5 caracteres';
+        }
+        break;
+      case 'password':
+        if (value && value.length < 8) {
+          error = 'La contraseña debe tener al menos 8 caracteres';
+        }
+        break;
+      case 'password_confirmation':
+        if (value !== profile.password) {
+          error = 'Las contraseñas no coinciden';
+        }
+        break;
+      default:
+        break;
+    }
+
+    return error;
+  };
   // Función para manejar cambio en inputs de perfil
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
+
     setProfile(prev => ({ ...prev, [name]: value }));
+
+    // Validación en tiempo real
+    const error = validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: error }));
   };
 
   if (loading) {
@@ -242,7 +305,10 @@ const Tecnico = () => {
     <div className="technician-container">
       {/* Header compacto */}
       <header className="compact-header">
-        <h1>ElectroElite</h1>
+        <div className="logo-area">
+          <img src={logoImg} alt="Logo ElectroElite" className="logo-img" />
+          <span className="logo-text">ElectroElite</span>
+        </div>
         <div className="header-controls">
           <div className="availability-container">
             <div
@@ -532,6 +598,7 @@ const Tecnico = () => {
                   onChange={handleProfileChange}
                   required
                 />
+                {errors.name && <p className="error-text">{errors.name}</p>}
               </div>
 
               <div className="form-group">
@@ -543,6 +610,7 @@ const Tecnico = () => {
                   onChange={handleProfileChange}
                   required
                 />
+                {errors.email && <p className="error-text">{errors.email}</p>}
               </div>
 
               <div className="form-group">
@@ -554,6 +622,7 @@ const Tecnico = () => {
                   onChange={handleProfileChange}
                   required
                 />
+                {errors.phone && <p className="error-text">{errors.phone}</p>}
               </div>
 
               <div className="form-group">
@@ -565,6 +634,7 @@ const Tecnico = () => {
                   onChange={handleProfileChange}
                   required
                 />
+                {errors.address && <p className="error-text">{errors.address}</p>}
               </div>
 
               <div className="password-section">
@@ -578,6 +648,7 @@ const Tecnico = () => {
                     value={profile.current_password}
                     onChange={handleProfileChange}
                   />
+                  {errors.current_password && <p className="error-text">{errors.current_password}</p>}
                 </div>
 
                 <div className="form-group">
@@ -588,6 +659,7 @@ const Tecnico = () => {
                     value={profile.password}
                     onChange={handleProfileChange}
                   />
+                  {errors.password && <p className="error-text">{errors.password}</p>}
                 </div>
 
                 <div className="form-group">
@@ -598,6 +670,7 @@ const Tecnico = () => {
                     value={profile.password_confirmation}
                     onChange={handleProfileChange}
                   />
+                  {errors.password_confirmation && <p className="error-text">{errors.password_confirmation}</p>}
                 </div>
               </div>
 

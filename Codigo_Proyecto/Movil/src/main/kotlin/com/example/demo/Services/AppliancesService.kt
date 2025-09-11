@@ -11,7 +11,7 @@ class AppliancesService {
     @Autowired
     lateinit var jdbcTemplate: JdbcTemplate
 
-    fun Appliancelist1(): List<String> {
+    fun list1(): List<String> {
         val sql = "select * from appliances"
         return jdbcTemplate.query(sql, RowMapper<String> { rs, _ ->
             val type = rs.getString("type")
@@ -19,12 +19,12 @@ class AppliancesService {
             "Tipo de electrodomestico: $type Marca: $brand "
         })
     }
-    fun Appliancelist2(appliance: AppliancesModel): AppliancesModel {
+    fun list2(appliance: AppliancesModel): AppliancesModel {
         val sql = "INSERT INTO appliances(type, brand, model,user_id,purchase_date) VALUES (?, ?, ?,?,?)"
         jdbcTemplate.update(sql, appliance.type, appliance.brand, appliance.model, appliance.user_id,appliance.purchase_date )
         return appliance
     }
-    fun Appliancelist3(id: Int): List<String> {
+    fun list3(id: Int): List<String> {
         val sql1 = "SELECT * from appliances WHERE id = ?"
         return jdbcTemplate.query(sql1, arrayOf(id), RowMapper<String> { rs, _ ->
             val detalles =
@@ -32,7 +32,7 @@ class AppliancesService {
             "$detalles"
         })
     }
-    fun Appliancelist4(id: Int, appliance: AppliancesModel): AppliancesModel {
+    fun list4(id: Int, appliance: AppliancesModel): AppliancesModel {
         val updates = mutableListOf<String>()
         val params = mutableListOf<Any>()
 
@@ -60,7 +60,7 @@ class AppliancesService {
         return appliance
     }
 
-    fun Appliancelist5(id: Int): Boolean {
+    fun list5(id: Int): Boolean {
         val sql = "DELETE from appliances WHERE id = ?"
         val filas= jdbcTemplate.update (sql, id )
         return filas>0

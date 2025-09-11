@@ -38,16 +38,26 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;           /* Cambia de 90% a 100% */
+  max-width: none;       /* Elimina el max-width */
+  margin: 0;             /* Elimina el margen lateral */
+  padding-left: 2vw;     /* agrega un pequeño padding izquierdo */
+  padding-right: 2vw;    /*agrega un pequeño padding derecho */
 }
 
 .logo {
-  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
   font-weight: bold;
+  font-size: 1.7rem;
   text-decoration: none;
   color: #2c3e50;
+}
+
+.logo-img {
+  height: 55px;      /* Ajusta el tamaño */
+  margin-right: 10px;
+  display: inline-block;
 }
 
 .nav-links {
@@ -303,4 +313,171 @@ footer {
   .razones-grid {
     grid-template-columns: 1fr;
   }
+}
+/* HERO MEJORADO */
+.hero-updated {
+  background: linear-gradient(120deg, #2c3e50 60%, #34495e 100%);
+  color: #fff;
+  padding: 6rem 0 7rem;
+  text-align: center;
+  position: relative;
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+
+.hero-highlight {
+  color: #ffd700;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.hero-sub {
+  color: #f1c40f;
+  font-weight: 500;
+}
+
+.hero-content h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.hero-content p {
+  font-size: 1.25rem;
+  margin-bottom: 2.2rem;
+}
+
+.hero-buttons .btn,
+.hero-buttons .btn-outline {
+  min-width: 180px;
+  font-size: 1.1rem;
+}
+
+/* SERVICIOS MEJORADOS */
+.servicio-card-updated {
+  border: 1.5px solid #e0e7ef;
+  box-shadow: 0 6px 18px rgba(44,62,80,0.07);
+  transition: transform 0.25s, box-shadow 0.25s;
+  position: relative;
+}
+
+.servicio-card-updated:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(44,62,80,0.13);
+}
+
+.servicio-icon {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* RAZONES MEJORADAS */
+.razon-card-updated {
+  border: 1.5px solid #e0e7ef;
+  box-shadow: 0 4px 14px rgba(44,62,80,0.07);
+  transition: transform 0.22s, box-shadow 0.22s;
+  position: relative;
+}
+
+.razon-card-updated:hover {
+  transform: translateY(-7px) scale(1.02);
+  box-shadow: 0 10px 28px rgba(44,62,80,0.11);
+}
+
+.razon-card-updated i {
+  font-size: 2.2rem;
+  color: #2980b9;
+  margin-bottom: 0.7rem;
+}
+
+/* CONTACTO MEJORADO */
+.contacto-updated {
+  background: linear-gradient(120deg, #2c3e50 60%, #34495e 100%);
+  color: #fff;
+  padding: 5rem 0 4rem;
+  text-align: center;
+  clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+  margin-top: 2rem;
+}
+
+.contact-link {
+  color: #ffd700;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+/* REDES SOCIALES CONTACTO */
+.social-icons-contact {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #2c3e50;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.5rem;
+  transition: background 0.2s, color 0.2s, transform 0.18s;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+  border: none;
+}
+
+.social-btn.facebook:hover {
+  background: #1877f3;
+  color: #fff;
+  transform: scale(1.12);
+}
+.social-btn.instagram:hover {
+  background: #e4405f;
+  color: #fff;
+  transform: scale(1.12);
+}
+.social-btn.whatsapp:hover {
+  background: #25d366;
+  color: #fff;
+  transform: scale(1.12);
+}
+
+/* FOOTER MEJORADO */
+.footer-updated {
+  background: #232f3e;
+  color: #fff;
+  padding: 2.5rem 0 1.5rem;
+  text-align: center;
+}
+
+.footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.footer-links {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.footer-links a {
+  color: #ffd700;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.18s;
+}
+
+.footer-links a:hover {
+  color: #fff;
+  text-decoration: underline;
 }
