@@ -4,7 +4,9 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { faMapMarkerAlt, faTasks, faFileAlt, faUser, faPhone, faEnvelope, faHome, faLock } from '@fortawesome/free-solid-svg-icons';
 import '../../assets/admin.css';
 import { api } from '../../services/api';
-import { FaUser } from 'react-icons/fa';
+import { BiGroup, BiWrench, BiReceipt, BiBarChartAlt2 } from "react-icons/bi";
+import logoImg from '../../assets/img/Logo.png';
+
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -126,12 +128,11 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem('authToken');
+      localStorage.removeItem('auth_token');
       localStorage.removeItem('userData');
       navigate('/login-register', { replace: true });
     }
   };
- 
   const handleElectroMovilClick = () => {
     navigate('/admin');
   };
@@ -140,28 +141,28 @@ const AdminDashboard = () => {
   const dashboardOptions = [
     {
       path: 'users',
-      icon: 'bi-people-fill',
+      icon: <BiGroup />,
       title: 'Gestión de Usuarios',
       description: 'Administra los usuarios del sistema, roles y permisos.'
     },
     {
       path: 'services',
-      icon: 'bi-tools',
+      icon: <BiWrench />,
       title: 'Gestión de Servicios',
       description: 'Gestiona los servicios ofrecidos por la empresa.'
     },
-    {
-      path: 'invoices',
-      icon: 'bi-receipt',
-      title: 'Gestión de Facturas',
-      description: 'Administra las facturas y transacciones de los clientes.'
-    },
-    {
-      path: 'reports',
-      icon: 'bi-graph-up',
-      title: 'Reportes',
-      description: 'Genera reportes y estadísticas del sistema.'
-    }
+    //{
+    // path: 'invoices',
+    //icon: <BiReceipt />,
+    //title: 'Gestión de Facturas',
+    //description: 'Administra las facturas y transacciones de los clientes.'
+    //},
+    //{
+    //path: 'reports',
+    //icon: <BiBarChartAlt2 />,
+    //title: 'Reportes',
+    //description: 'Genera reportes y estadísticas del sistema.'
+    //}
   ];
   if (loading) {
     return (
@@ -174,7 +175,10 @@ const AdminDashboard = () => {
   return (
     <div className="usuario-container">
       <header className="compact-header">
-        <h1 onClick={handleElectroMovilClick} style={{ cursor: 'pointer' }}>ElectroMovil</h1>
+        <h1 className="admin-logo" onClick={handleElectroMovilClick} style={{ cursor: 'pointer' }}>
+          <img src={logoImg} alt="Logo ElectroElite" className="logo-img" />
+          <span className="logo-text">ElectroElite</span>
+        </h1>
         <div className="header-controls">
           <div className="controls-spacer"></div>
           <button
@@ -195,7 +199,7 @@ const AdminDashboard = () => {
               {dashboardOptions.map(option => (
                 <Link to={option.path} key={option.path} className="dashboard-card">
                   <div className="card-icon">
-                    <i className={`bi ${option.icon}`}></i>
+                    {option.icon}
                   </div>
                   <h3>{option.title}</h3>
                   <p>{option.description}</p>
@@ -204,11 +208,9 @@ const AdminDashboard = () => {
             </div>
           </div>
         ) : (
-          <div className="row">
-            <div className="col-md-10">
-              <div className="content-container">
-                <Outlet />
-              </div>
+          <div className="admin-content">
+            <div className="content-container" style={{ width: "100%", maxWidth: "100%", padding: 0, boxShadow: "none", background: "transparent" }}>
+              <Outlet />
             </div>
           </div>
         )}
@@ -319,7 +321,7 @@ const AdminDashboard = () => {
 
       <footer className="app-footer">
         <div className="footer-content">
-          <p>&copy; {new Date().getFullYear()} ElectroMovil. Todos los derechos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} ElectroElite. Todos los derechos reservados.</p>
           <div className="footer-links">
             <a href="#">Términos y condiciones</a>
             <a href="#">Política de privacidad</a>

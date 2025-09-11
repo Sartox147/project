@@ -12,6 +12,13 @@
   box-shadow: none !important;
   border: none !important;
 }
+.services-management-container .table {
+  width: 100% !important;
+  margin: 0;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(44,62,80,0.07);
+  background: #fff;
+}
 
 /* Sidebar */
 .sidebar {
@@ -43,15 +50,16 @@
   font-size: 1.1rem;
 }
 
-/* Dashboard Grid (Nuevos estilos) */
+/* --- Nuevo diseño para el dashboard principal --- */
+
 .dashboard-container {
   padding: 2.5rem 2rem 1.5rem 2rem;
-  background: #f8fafc !important;
+  background: #f8fafc;
   border-radius: 22px;
-  box-shadow: none !important; 
+  box-shadow: none;
   margin: 2rem auto 0 auto;
   max-width: 1400px;
-  border: none !important;
+
 }
 
 .dashboard-title {
@@ -77,6 +85,7 @@
 
 .dashboard-card {
   background: #fff;
+  text-decoration: none;
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(44,62,80,0.08);
   padding: 2.2rem 1.5rem 1.7rem 1.5rem;
@@ -91,7 +100,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-decoration: none !important;
 }
 .dashboard-card:hover {
   transform: translateY(-7px) scale(1.03);
@@ -129,7 +137,6 @@
   margin-bottom: 0;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .dashboard-container {
     padding: 1.2rem 0.5rem;
@@ -148,34 +155,6 @@
   }
   .dashboard-title {
     font-size: 1.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .admin-content {
-    padding: 1rem;
-  }
-
-  .sidebar {
-    margin-bottom: 1.5rem;
-    padding-right: 0;
-  }
-
-  .content-container {
-    padding: 1.5rem;
-  }
-
-  .dashboard-container {
-    padding: 1.5rem 0.5rem;
-  }
-
-  .dashboard-options {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.25rem;
-  }
-
-  .dashboard-card {
-    padding: 1.5rem;
   }
 }
 
@@ -203,12 +182,28 @@
   .dashboard-card h3 {
     font-size: 1.2rem;
   }
-  .logo-img {
-    width: 100px;
-    height: 40px;
-    object-fit: contain;
-    /* Asegura que no se distorsione */
-  }
+
+.admin-logo {
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #232f3e;
+  margin: 0;
+  gap: 12px; /* Espacio entre logo y texto */
+}
+
+.logo-img {
+  height: 48px;
+  width: auto;
+  margin-right: 0;
+  display: inline-block;
+}
+
+.logo-text {
+  display: inline-block;
+  vertical-align: middle;
+}
 
   .form-group label {
     display: block;
@@ -216,208 +211,6 @@
     font-weight: 500;
     color: var(--primary-color);
   }
-/* --- Nuevo diseño profesional para Services Management --- */
-
-.services-management-container {
-  background: #f8fafc;
-  border-radius: 22px;
-  box-shadow: 0 6px 32px rgba(44,62,80,0.10);
-  padding: 2.5rem 2rem 2rem 2rem;
-  margin: 2rem auto;
-  max-width: 1300px;
-  min-height: 80vh;
-  border: 1px solid #e5e9f2;
-}
-
-.services-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2.5rem;
-  gap: 1rem;
-  border-bottom: 1.5px solid #e5e9f2;
-  padding-bottom: 1.2rem;
-}
-
-.services-header h2 {
-  font-weight: 800;
-  color: #232f3e;
-  margin: 0;
-  font-size: 2rem;
-  letter-spacing: 0.5px;
-}
-
-.services-header .btn {
-  font-weight: 700;
-  font-size: 1.08rem;
-  padding: 0.6rem 2rem;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #2c3e50 60%, #34495e 100%);
-  color: #fff;
-  border: none;
-  box-shadow: 0 2px 8px rgba(44,62,80,0.08);
-  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
-}
-.services-header .btn:hover {
-  background: #ffd700;
-  color: #232f3e;
-}
-
-.services-search {
-  margin-bottom: 2rem;
-  max-width: 420px;
-  border-radius: 10px;
-  border: 1.5px solid #e0e7ef;
-  padding: 0.7rem 1.2rem;
-  font-size: 1.08rem;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(44,62,80,0.04);
-}
-
-.table {
-  background: #fff;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 16px rgba(44,62,80,0.07);
-  margin-bottom: 0;
-}
-
-.table th, .table td {
-  vertical-align: middle !important;
-  text-align: center;
-  font-size: 1.07rem;
-  padding: 0.85rem 0.5rem;
-}
-
-.table th {
-  background: #f1f5fa;
-  color: #232f3e;
-  font-weight: 800;
-  border-bottom: 2px solid #e0e7ef;
-  letter-spacing: 0.5px;
-}
-
-.table td {
-  border-bottom: 1px solid #f0f0f0;
-  color: #34495e;
-}
-
-.table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: #f6fafd;
-}
-
-/* Estado badge */
-.badge {
-  font-size: 1rem;
-  padding: 0.5em 1.2em;
-  border-radius: 14px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  box-shadow: 0 1px 4px rgba(44,62,80,0.06);
-  border: none;
-  text-transform: capitalize;
-}
-.badge-warning {
-  background: #fff8e1;
-  color: #bfa100;
-}
-.badge-primary {
-  background: #e3f0ff;
-  color: #1769aa;
-}
-.badge-success {
-  background: #e7fbe7;
-  color: #1a7f37;
-}
-.badge-danger {
-  background: #ffeaea;
-  color: #c0392b;
-}
-
-/* Botones de acción */
-.services-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: center;
-}
-
-.services-actions .btn {
-  min-width: 100px;
-  font-size: 1rem;
-  border-radius: 8px;
-  margin-bottom: 0.2rem;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(44,62,80,0.06);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  border: none;
-  transition: background 0.18s, color 0.18s;
-}
-.services-actions .btn-info {
-  background: #e3f0ff;
-  color: #1769aa;
-}
-.services-actions .btn-info:hover {
-  background: #1769aa;
-  color: #fff;
-}
-.services-actions .btn-outline-primary {
-  background: #fff;
-  color: #1769aa;
-  border: 1.5px solid #1769aa;
-}
-.services-actions .btn-outline-primary.active, 
-.services-actions .btn-outline-primary:active {
-  background: #1769aa;
-  color: #fff;
-  border: 1.5px solid #1769aa;
-}
-.services-actions .btn-outline-primary:hover {
-  background: #e3f0ff;
-  color: #1769aa;
-}
-
-/* Responsive */
-@media (max-width: 1100px) {
-  .services-management-container {
-    padding: 1.2rem 0.5rem;
-  }
-  .services-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.7rem;
-  }
-  .table th, .table td {
-    font-size: 1rem;
-    padding: 0.5rem;
-  }
-}
-
-@media (max-width: 700px) {
-  .services-management-container {
-    padding: 0.5rem 0.2rem;
-  }
-  .services-header h2 {
-    font-size: 1.2rem;
-  }
-  .table th, .table td {
-    font-size: 0.93rem;
-    padding: 0.3rem;
-  }
-  .services-actions {
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-}
-.services-management-container .table {
-  width: 100% !important;
-  margin: 0;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(44,62,80,0.07);
-  background: #fff;
 }
 body, #root {
   min-height: 100vh;
@@ -435,6 +228,38 @@ body, #root {
 
 .footer {
   flex-shrink: 0;
- 
 }
+.pagination-controls {
+  gap: 10px;
+}
+
+/* Spinner styles */
+.custom-spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+   width: 100%;
+}
+
+.custom-spinner {
+  width: 56px;
+  height: 56px;
+  border: 6px solid #e0e0e0;
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 18px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner-text {
+  font-size: 1.15rem;
+  color: #007bff;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }

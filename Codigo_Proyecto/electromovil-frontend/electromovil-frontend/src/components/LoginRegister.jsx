@@ -175,7 +175,7 @@ const LoginRegister = ({ onLoginSuccess }) => {
       navigate(redirectPath);
       onLoginSuccess?.(user);
     } catch (error) {
-      setErrors({ general: error.response?.data?.message || 'Error verifica tus datos ' });
+      setErrors({ general: error.response?.data?.message || 'Error al iniciar sesión' });
     } finally {
       setIsLoading(false);
     }
@@ -332,10 +332,9 @@ const LoginRegister = ({ onLoginSuccess }) => {
             <h1>¡Bienvenido!</h1>
             <p>Inicia sesión con:</p>
             <div className="social-icons">
-              <a href="#"><i className='bx bxl-google'></i></a>
-              <a href="#"><i className='bx bxl-facebook'></i></a>
-              <a href="#"><i className='bx bxl-github'></i></a>
-              <a href="#"><i className='bx bxl-linkedin'></i></a>
+              <a href="https://workspace.google.com/intl/es-419/gmail/"><i className='bx bxl-google'></i></a>
+              <a href="https://www.facebook.com/"><i className='bx bxl-facebook'></i></a>
+              <a href="https://github.com/login"><i className='bx bxl-github'></i></a>
             </div>
             <p>¿No tienes una cuenta?</p>
             <button className="btn register-btn">Registrarse</button>
@@ -346,10 +345,9 @@ const LoginRegister = ({ onLoginSuccess }) => {
             <button className="btn login-btn">Iniciar sesión</button>
             <p>O regístrate con:</p>
             <div className="social-icons">
-              <a href="#"><i className='bx bxl-google'></i></a>
-              <a href="#"><i className='bx bxl-facebook'></i></a>
-              <a href="#"><i className='bx bxl-github'></i></a>
-              <a href="#"><i className='bx bxl-linkedin'></i></a>
+              <a href="https://workspace.google.com/intl/es-419/gmail/"><i className='bx bxl-google'></i></a>
+              <a href="https://www.facebook.com/"><i className='bx bxl-facebook'></i></a>
+              <a href="https://github.com/login"><i className='bx bxl-github'></i></a>
             </div>
           </div>
         </div>

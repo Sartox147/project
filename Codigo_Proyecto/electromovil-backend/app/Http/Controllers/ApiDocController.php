@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 /**
  * @OA\Info(
  *     version="1.0.0",
- *     title="Documentación de la API del Servicio Técnico",
+ *     title="Documentación de ElectroElite",
  *     description="API construida con Laravel y documentada con Swagger",
  *     @OA\Contact(
  *         email="soporte@tuservicio.com",
- *         name="Soporte Técnico"
+ *         name="Soporte Técnico"   
  *     )
  * )
  *
